@@ -1,0 +1,135 @@
+== Biological subgroup composition ==
+type
+Insect infestation    92
+Animal accident        1
+
+== any epidemic/COVID rows? == 0
+
+== subgroup share of events ==
+subgroup
+Hydrological      43.7
+Meteorological    34.7
+Geophysical       12.6
+Climatological     8.4
+Biological         0.6
+subgroup
+Hydrological      6561
+Meteorological    5205
+Geophysical       1895
+Climatological    1258
+Biological          96
+
+== top 10 costliest single rows (real 2022 USD) ==
+ year                        country       type          subtype  events  deaths  damage_B
+ 2011                          Japan Earthquake          Tsunami       1 19846.0     273.2
+ 2005 United States of America (the)      Storm Tropical cyclone       4  1852.0     236.1
+ 1995                          Japan Earthquake  Ground movement       2  5297.0     192.1
+ 2017 United States of America (the)      Storm Tropical cyclone       4   189.0     181.8
+ 2008                          China Earthquake  Ground movement       7 87564.0     116.2
+ 2022 United States of America (the)      Storm Tropical cyclone       2   157.0     101.0
+ 2004 United States of America (the)      Storm Tropical cyclone       5   122.0      82.2
+ 2017                    Puerto Rico      Storm Tropical cyclone       2    66.0      81.2
+ 2021 United States of America (the)      Storm Tropical cyclone       5   104.0      74.6
+ 1980                          Italy Earthquake  Ground movement       1  4689.0      71.0
+
+== damage per event by era (real) ==
+  1900-1969: $303.4M/event  (reported-damage rows only: $981.1M)
+  1970-2022: $460.8M/event  (reported-damage rows only: $953.7M)
+
+== reporting completeness by decade (% rows with a deaths / damage figure) ==
+        pct_deaths  pct_damage  rows
+decade                              
+1900          92.1        15.9    63
+1910          75.7        18.6    70
+1920          83.0        18.2    88
+1930          91.9        16.2   111
+1940          82.1        17.1   140
+1950          91.5        17.9   246
+1960          74.5        50.1   475
+1970          69.9        39.7   634
+1980          63.3        34.4  1250
+1990          69.8        48.0  1826
+2000          70.1        34.3  2536
+2010          70.5        36.5  2213
+2020          70.2        31.9   728
+
+== deaths by decade x subgroup (thousands) ==
+subgroup  Biological  Climatological  Geophysical  Hydrological  Meteorological
+decade                                                                         
+1900             0.0          1261.0        192.7           0.7            18.0
+1910             0.0            86.1         76.8         101.5            59.9
+1920             0.0          4724.1        390.1           4.7           120.0
+1930             0.0             0.1        169.9        4362.5            95.5
+1940             0.0          3450.2        171.1         118.6           127.3
+1950             0.0             0.0         26.9        2063.8            36.8
+1960             0.0          1510.7         57.5          37.5           135.1
+1970             0.0           119.1        432.4          78.2           358.9
+1980             0.0           557.7         85.2          57.9            51.4
+1990             0.0             4.0        105.0         104.0           220.5
+2000             0.0             1.8        454.2          61.6           263.8
+2010             0.0            21.0        268.9          60.8           102.0
+2020             0.0             3.2          4.7          19.6            29.3
+
+== affected per event, trend 1970-2022 ==
+  log10(affected/event) slope/decade -0.023 dex (x0.95)  p=0.38 R2=0.02
+  log10(deaths/event  ) slope/decade -0.240 dex (x0.58)  p=9.5e-07 R2=0.38
+  log10(damage/event  ) slope/decade +0.042 dex (x1.10)  p=0.053 R2=0.07
+
+== lethality heatmap: deaths per event, type x decade (top 6 types, 1950+) ==
+['Flood', 'Storm', 'Earthquake', 'Drought', 'Landslide', 'Extreme temperature']
+decade                  1950     1960    1970    1980   1990    2000    2010    2020
+type                                                                                
+Drought                  NaN  29051.0  1952.0  4423.0   22.0     7.0   119.0    53.0
+Earthquake             320.0    592.0  3926.0   347.0  390.0  1570.0  1021.0    61.0
+Extreme temperature    187.0    125.0   104.0   144.0  102.0   409.0   359.0  1202.0
+Flood                25453.0    209.0   273.0   100.0  111.0    31.0    33.0    31.0
+Landslide              108.0    195.0   136.0    60.0   57.0    40.0    55.0    24.0
+Storm                  263.0    635.0  1304.0    86.0  236.0   164.0    28.0    15.0
+
+== top 15 countries: rank differences ==
+                                events_rk  deaths_rk  affected_rk  damage_rk
+country                                                                     
+United States of America (the)          1         23            7          1
+China                                   2          1            1          2
+India                                   3          2            2          5
+Philippines (the)                       4         20            4         22
+Indonesia                               5          8           16         19
+Japan                                   6          7           31          3
+Bangladesh                              7          3            3         23
+Mexico                                  8         32           32         10
+Iran (Islamic Republic of)              9         10           12         18
+Viet Nam                               10         31           10         28
+Brazil                                 11         46            6         17
+Pakistan                               12          9            5         16
+Colombia                               13         26           36         44
+Australia                              14         69           40          7
+Turkey                                 15         15           52         21
+
+  USA: deaths rank 23 deaths 44,246 | damage rank 1
+  Haiti: events 127 deaths 245,431 deaths/event 1,933
+
+== deaths per event, top-20-by-events countries ==
+                                events      deaths      dpe
+country                                                    
+China                              984  10960660.0  11139.0
+Bangladesh                         327   2590961.0   7923.0
+India                              688   4591741.0   6674.0
+Italy                              176    140590.0    799.0
+Pakistan                           227    180452.0    795.0
+Iran (Islamic Republic of)         255    163081.0    640.0
+Japan                              378    239475.0    634.0
+Turkey                             202     96481.0    478.0
+Peru                               195     86304.0    443.0
+Indonesia                          570    239131.0    420.0
+Russian Federation (the)           163     61607.0    378.0
+France                             193     31667.0    164.0
+Colombia                           220     34092.0    155.0
+Afghanistan                        191     22891.0    120.0
+Philippines (the)                  659     70389.0    107.0
+Viet Nam                           248     26120.0    105.0
+Mexico                             299     25019.0     84.0
+Brazil                             246     11068.0     45.0
+United States of America (the)    1119     44246.0     40.0
+Australia                          215      2299.0     11.0
+
+== ISO sanity for choropleth == {np.int64(3): 10380}

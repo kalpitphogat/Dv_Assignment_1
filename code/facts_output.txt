@@ -1,0 +1,213 @@
+==============================================================================
+DATASET SHAPE
+raw rows=10,431  clean rows=10,380  dropped(2023 partial)=51
+2023 rows in raw: 51 | CPI null in raw: 51 | all 2023 have null CPI: True
+years: 1900 - 2022 | countries: 225 | ISO: 225 | types: 13 | subtypes: 35 | subgroups: 5 | groups: ['Natural']
+total events recorded: 15,015
+
+==============================================================================
+MISSINGNESS (clean)
+  deaths           missing  3,043 / 10,380  ( 29.3%)
+  affected         missing  2,839 / 10,380  ( 27.4%)
+  damage_real      missing  6,550 / 10,380  ( 63.1%)
+  damage_nominal   missing  6,550 / 10,380  ( 63.1%)
+  cpi              missing      0 / 10,380  (  0.0%)
+
+==============================================================================
+CPI / ADJUSTMENT SANITY
+  adjusted>=nominal in 100.0% of rows
+  max |real/nominal - 100/cpi| = 0.000242  -> adjusted = nominal * 100/CPI (constant 2022 USD)
+  CPI range: 2.849 - 100.000; CPI in 2022 = [100.]
+
+==============================================================================
+HEADLINE TOTALS (1900-2022)
+  total deaths      22,863,925
+  total affected    8,522,002,246
+  damage nominal    $4.19 T
+  damage real(2022) $6.70 T
+
+==============================================================================
+A) DECADAL TABLE
+        events      deaths        affected              damage  rows  deaths_per_event  affected_per_event
+decade                                                                                                    
+1900        74 1,472,407.0       592,790.0    44,721,648,301.0    63          19,897.4             8,010.7
+1910        72   324,304.0     3,841,473.0    15,735,260,401.0    70           4,504.2            53,353.8
+1920        96 5,238,918.0    26,574,459.0    16,971,170,695.0    88          54,572.1           276,817.3
+1930       131 4,627,952.0    14,339,808.0    67,100,721,512.0   111          35,327.9           109,464.2
+1940       168 3,867,121.0     3,469,487.0    46,872,004,093.0   140          23,018.6            20,651.7
+1950       308 2,127,463.0    19,945,559.0    66,142,837,153.0   246           6,907.3            64,758.3
+1960       561 1,740,780.0   199,376,471.0   170,208,591,752.0   475           3,103.0           355,394.8
+1970       808   988,595.0   552,709,271.0   290,950,830,235.0   634           1,223.5           684,046.1
+1980      1631   752,155.0 1,240,891,182.0   523,277,274,260.0  1250             461.2           760,816.2
+1990      2575   433,501.0 2,013,107,107.0 1,354,004,286,163.0  1826             168.3           781,789.2
+2000      3872   781,299.0 2,274,777,469.0 1,329,308,440,852.0  2536             201.8           587,494.2
+2010      3504   452,752.0 1,767,738,787.0 2,073,711,752,701.0  2213             129.2           504,491.7
+2020      1215    56,678.0   404,638,383.0   698,531,146,163.0   728              46.6           333,035.7
+
+  events 1900s: 74  2000s: 3872  2010s: 3504  ratio 2000s/1900s: 52.3x
+  peak events decade: 2000 3872
+  peak deaths decade: 1920 5,238,918
+  deaths/event 1900s: 19,897  2010s: 129  decline: 99.4%
+
+  --- deaths per decade excluding the 3 largest single rows per decade (robustness) ---
+decade
+1900    117.4
+1910     89.3
+1920    538.9
+1930    286.0
+1940    357.1
+1950     89.7
+1960    169.8
+1970    346.6
+1980    202.2
+1990    224.6
+2000    389.7
+2010    154.4
+2020     44.3
+
+==============================================================================
+A) TOP 10 SINGLE ROWS BY DEATHS
+ year      country    type             subtype  events    deaths    affected
+ 1931        China   Flood      Riverine flood       1 3700000.0         NaN
+ 1928        China Drought             Drought       1 3000000.0         NaN
+ 1959        China   Flood Flood (unspecified)       2 2000187.0         NaN
+ 1943   Bangladesh Drought             Drought       1 1900000.0         NaN
+ 1942        India Drought             Drought       1 1500000.0         NaN
+ 1965        India Drought             Drought       1 1500000.0 100000000.0
+ 1900        India Drought             Drought       1 1250000.0         NaN
+ 1921 Soviet Union Drought             Drought       1 1200000.0   5000000.0
+ 1920        China Drought             Drought       1  500000.0  20000000.0
+ 1939        China   Flood      Riverine flood       1  500000.0         NaN
+
+==============================================================================
+A) EVENT COUNT BY SUBGROUP PER ERA
+subgroup   Biological  Climatological  Geophysical  Hydrological  Meteorological
+era                                                                             
+1900-1969           3             101          456           340             510
+1970-2022          93            1157         1439          6221            4695
+
+  share of ALL recorded events occurring 1970-2022: 90.6%
+  share of years 1970-2022 out of window: 43.1%
+
+==============================================================================
+B) COUNTRY LEADERBOARDS
+
+  top 10 by events:
+                       country  events
+United States of America (the)    1119
+                         China     984
+                         India     688
+             Philippines (the)     659
+                     Indonesia     570
+                         Japan     378
+                    Bangladesh     327
+                        Mexico     299
+    Iran (Islamic Republic of)     255
+                      Viet Nam     248
+
+  top 10 by deaths:
+                   country     deaths
+                     China 10,960,660
+                     India  4,591,741
+                Bangladesh  2,590,961
+              Soviet Union  1,357,423
+                  Ethiopia    404,750
+                     Haiti    245,431
+                     Japan    239,475
+                 Indonesia    239,131
+                  Pakistan    180,452
+Iran (Islamic Republic of)    163,081
+
+  top 10 by affected:
+                       country      affected
+                         China 3,321,127,041
+                         India 2,481,682,481
+                    Bangladesh   469,511,918
+             Philippines (the)   256,206,748
+                      Pakistan   132,062,273
+                        Brazil   115,431,312
+United States of America (the)   115,316,586
+                      Ethiopia   112,893,545
+                      Thailand   111,928,301
+                      Viet Nam    98,385,851
+
+  top 10 by damage:
+                       country            damage
+United States of America (the) 2,233,178,038,021
+                         China   946,595,882,672
+                         Japan   854,349,718,343
+                         Italy   239,520,101,426
+                         India   223,760,740,240
+                       Germany   132,027,559,215
+                     Australia   124,547,036,738
+                         Chile    93,330,830,648
+                   Puerto Rico    93,283,440,133
+                        Mexico    88,325,988,334
+
+  concentration (share of global total held by top-N countries):
+    events    top5  26.8%  top10  36.8%  top20  50.3%  (n countries with any = 225)
+    deaths    top5  87.1%  top10  91.7%  top20  96.3%  (n countries with any = 215)
+    affected  top5  78.2%  top10  84.7%  top20  90.0%  (n countries with any = 220)
+    damage    top5  67.2%  top10  75.1%  top20  84.8%  (n countries with any = 204)
+
+  countries needed to reach 50% of global: events=20  deaths=2  affected=2  damage=3  
+
+  historical states present: ['Soviet Union', 'Yemen Arab Rep', 'Yugoslavia', 'Yemen P Dem Rep', 'Czechoslovakia', 'Germany Dem Rep', 'Serbia Montenegro']
+
+==============================================================================
+B) DOMINANT DISASTER TYPE PER COUNTRY (countries with >=20 events)
+type
+Flood         82
+Storm         39
+Earthquake     6
+Drought        3
+Landslide      1
+Wildfire       1
+  n countries with >=20 events: 132
+
+==============================================================================
+C) IMPACT PROFILE BY DISASTER TYPE
+                       events  rows       deaths        affected              damage  med_deaths    med_damage  deaths_per_event  affected_per_event  damage_per_event_M  pct_of_events  pct_of_deaths  pct_of_affected  pct_of_damage
+type                                                                                                                                                                                                                                  
+Flood                    5764  3816  7,003,559.0 3,964,050,771.0 1,635,062,491,516.0        21.0  98,581,510.0           1,215.1           687,725.7               283.7           38.4           30.6             46.5           24.4
+Storm                    4591  2749  1,403,769.0 1,259,876,822.0 2,780,776,505,100.0        20.0 201,409,032.0             305.8           274,423.2               605.7           30.6            6.1             14.8           41.5
+Earthquake               1580  1078  2,343,914.0   207,234,967.0 1,559,415,046,792.0        31.0 151,575,644.5           1,483.5           131,161.4               987.0           10.5           10.3              2.4           23.3
+Drought                   801   783 11,734,025.0 2,941,178,966.0   374,288,482,473.0       143.0 306,331,949.0          14,649.2         3,671,883.9               467.3            5.3           51.3             34.5            5.6
+Landslide                 797   646     67,690.0    14,772,429.0    21,494,699,322.0        32.0  42,146,188.0              84.9            18,535.0                27.0            5.3            0.3              0.2            0.3
+Extreme temperature       613   563    210,641.0   103,691,695.0   125,874,037,401.0        40.0 407,881,297.0             343.6           169,154.5               205.3            4.1            0.9              1.2            1.9
+Wildfire                  454   374      4,656.0    18,380,986.0   183,742,010,759.0         7.0 250,280,890.0              10.3            40,486.8               404.7            3.0            0.0              0.2            2.7
+Volcanic activity         270   231     86,912.0     9,990,264.0    14,295,243,873.0        39.5  92,881,741.0             321.9            37,001.0                52.9            1.8            0.4              0.1            0.2
+Insect infestation         95    92          0.0     2,802,200.0       413,107,760.0         NaN 103,057,520.0               0.0            29,496.8                 4.3            0.6            0.0              0.0            0.0
+Mass movement (dry)        45    44      4,486.0        23,117.0     1,947,533,407.0        42.0  10,050,086.0              99.7               513.7                43.3            0.3            0.0              0.0            0.0
+Glacial lake outburst       3     2        261.0            24.0       226,805,878.0       130.5 226,805,878.0              87.0                 8.0                75.6            0.0            0.0              0.0            0.0
+Animal accident             1     1         12.0             5.0                 0.0        12.0           NaN              12.0                 5.0                 0.0            0.0            0.0              0.0            0.0
+Fog                         1     1      4,000.0             0.0                 0.0     4,000.0           NaN           4,000.0                 0.0                 0.0            0.0            0.0              0.0            0.0
+
+==============================================================================
+C) DAMAGE OVER TIME (real, 2022 USD, by decade & subgroup, $B)
+subgroup  Biological  Climatological  Geophysical  Hydrological  Meteorological
+decade                                                                         
+1900             0.0             0.0         27.4          15.6             1.7
+1910             0.0             1.9          2.9           0.0            10.9
+1920             0.0             0.1         11.5           1.1             4.3
+1930             0.0             0.0         21.7          35.8             9.6
+1940             0.0             0.4         20.6          15.4            10.5
+1950             0.0             0.0          9.3          20.2            36.6
+1960             0.0             9.3         47.8          44.7            68.4
+1970             0.0            29.9         92.3          52.3           116.4
+1980             0.0            59.7        193.4         124.4           145.8
+1990             0.2           115.9        374.8         411.2           451.9
+2000             0.2            70.1        251.3         256.2           751.5
+2010             0.0           186.5        479.4         494.1           913.7
+2020             0.0            84.4         43.2         185.6           385.4
+
+==============================================================================
+C) DECOUPLING CHECK 1970-2022 (annual series)
+  log10(deaths   ) ~ year: slope/decade = -0.083 dex  (x0.83/decade)  p=0.064  R2=0.07
+  log10(damage   ) ~ year: slope/decade = +0.198 dex  (x1.58/decade)  p=1.7e-12  R2=0.63
+  log10(events   ) ~ year: slope/decade = +0.157 dex  (x1.43/decade)  p=2.1e-20  R2=0.82
+  log10(affected ) ~ year: slope/decade = +0.134 dex  (x1.36/decade)  p=2.9e-05  R2=0.29
+
+  Spearman deaths vs damage (1970-2022 annual): -0.006
+  median annual deaths 1970-1989: 25,586 | 2003-2022: 19,265
+  median annual damage  1970-1989: $ 36.2B | 2003-2022: $ 178.9B
