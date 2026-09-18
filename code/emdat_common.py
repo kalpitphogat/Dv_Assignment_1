@@ -260,3 +260,46 @@ SOURCE_NOTE = ("Source: EM-DAT Emergency Events Database country profiles "
 
 def footnote(fig, text=SOURCE_NOTE, y=-0.005):
     fig.text(0.012, y, text, ha="left", fontsize=8.5, color=INK_MUTED)
+
+
+def heatmap_log(ax, table, cbar_label, fmt=lambda v: f"{v:,.0f}",
+                cbar_ticks=(0, 1, 2, 3, 4), cbar_labels=("1", "10", "100", "1K", "10K")):
+    """Sequential-blue heatmap of a categorical x ordinal table on a log10 colour scale.
+
+    Every cell prints its value so the reader never estimates a number from
+    colour; ink flips to white only on the dark end of the ramp. Cells with no
+    data are drawn as a dash. Returns the colorbar so callers can adjust it.
+    """
+    from matplotlib.colors import LinearSegmentedColormap
+    blues = LinearSegmentedColormap.from_list("emdat_blues", SEQ)
+    vals = table.values.astype(float)
+    with np.errstate(divide="ignore"):
+        z = np.where(vals > 0, np.log10(np.where(vals > 0, vals, 1)), np.nan)
+    im = ax.imshow(z, cmap=blues, aspect="auto", vmin=np.nanmin(z), vmax=np.nanmax(z))
+    ax.set_xticks(range(table.shape[1]))
+    ax.set_xticklabels([f"{c}s" if isinstance(c, (int, np.integer)) else str(c)
+                        for c in table.columns])
+    ax.set_yticks(range(table.shape[0]))
+    ax.set_yticklabels(table.index)
+    ax.grid(False)
+    despine(ax, keep=())
+    ax.set_xticks(np.arange(-.5, table.shape[1], 1), minor=True)
+    ax.set_yticks(np.arange(-.5, table.shape[0], 1), minor=True)
+    ax.grid(which="minor", color=SURFACE, linewidth=2.4)
+    ax.tick_params(which="minor", length=0)
+    thresh = np.nanmin(z) + 0.62 * np.ptp(z[~np.isnan(z)])
+    for i in range(table.shape[0]):
+        for j in range(table.shape[1]):
+            v = vals[i, j]
+            if np.isnan(v) or v <= 0:
+                ax.text(j, i, "-", ha="center", va="center", color=INK_MUTED)
+                continue
+            col = "#ffffff" if z[i, j] > thresh else INK
+            ax.text(j, i, fmt(v), ha="center", va="center", fontsize=9,
+                    color=col, fontweight="bold")
+    cb = ax.figure.colorbar(im, ax=ax, pad=0.015, fraction=0.030)
+    cb.set_ticks(list(cbar_ticks))
+    cb.set_ticklabels(list(cbar_labels))
+    cb.set_label(cbar_label, fontsize=10, color=INK_SEC)
+    cb.outline.set_visible(False)
+    return cb

@@ -42,7 +42,7 @@ DAS732_A1_Submission/
 │   ├── DAS732_A1_Report.pdf      <- THE REPORT (submit this) — 32 pages
 │   └── DAS732_A1_Report.tex      <- LaTeX source; the PDF is built from it
 │
-├── images/                       <- Fig1.png .. Fig20.png, all featured in the report
+├── images/                       <- Fig1.png .. Fig26.png, all featured in the report
 │
 ├── data/
 │   ├── emdat_country_profiles_raw.csv   <- raw Kaggle download, unmodified
@@ -53,11 +53,11 @@ DAS732_A1_Submission/
     ├── facts.py, facts2.py       <- derive every number the report quotes
     ├── facts_output.txt, facts2_output.txt   <- their saved output
     ├── task_0_diagrams.py        <- Fig1–Fig2   (method diagrams)
-    ├── task_a_temporal.py        <- Fig3–Fig7, Fig18  (Task Set A)
-    ├── task_b_geography.py       <- Fig8–Fig12, Fig19 (Task Set B)
-    ├── task_c_impact.py          <- Fig13–Fig17, Fig20 (Task Set C)
+    ├── task_a_temporal.py        <- Fig3–Fig7, Fig18–20 (Task Set A)
+    ├── task_b_geography.py       <- Fig8–Fig12, Fig21–23 (Task Set B)
+    ├── task_c_impact.py          <- Fig13–Fig17, Fig24–26 (Task Set C)
     ├── build_report_pdf.py       <- runs pdflatex 3x and fails on any log problem
-    ├── check_report.py           <- asserts all 140 numbers in the .tex against the data
+    ├── check_report.py           <- asserts all 172 numbers in the .tex against the data
     └── run_all.py                <- regenerates everything above from the raw CSV
 ```
 
@@ -87,8 +87,14 @@ no supplementary image README is required.
 | `Fig16.png` | C1.4 | Famine and flood became survivable; heatwaves went the other way |
 | `Fig17.png` | C1.5 | Costs rose, deaths did not follow |
 | `Fig18.png` | A1.6 | Riverine flooding, not flash or coastal flooding, drives the flood trend |
-| `Fig19.png` | B1.6 | High event volume and broad hazard diversity are different things |
-| `Fig20.png` | C1.6 | Why every damage figure in this report is inflation-adjusted |
+| `Fig19.png` | A1.7 | Every hazard's record thickens after 1970, but not at the same rate |
+| `Fig20.png` | A1.8 | Earthquakes set the reporting baseline; floods and heatwaves exceed it by far |
+| `Fig21.png` | B1.6 | High event volume and broad hazard diversity are different things |
+| `Fig22.png` | B1.7 | The map of exposure has moved: Vietnam climbed 40 places, Japan fell 5 |
+| `Fig23.png` | B1.8 | Two kinds of hotspot: early-and-steady versus late-and-sudden |
+| `Fig24.png` | C1.6 | Why every damage figure in this report is inflation-adjusted |
+| `Fig25.png` | C1.7 | Wealth turns deaths into bills: lethality and cost per event are unrelated |
+| `Fig26.png` | C1.8 | Drought stopped killing but never stopped displacing |
 
 ## Dataset
 
@@ -116,7 +122,7 @@ python run_all.py
 ```
 
 `run_all.py` rewrites the cleaned extract, re-derives every quoted number into
-`facts_output.txt` / `facts2_output.txt`, regenerates all 20 figures, runs
+`facts_output.txt` / `facts2_output.txt`, regenerates all 26 figures, runs
 `pdflatex` three times, and then asserts every number in the report against the
 data. It exits non-zero if anything fails.
 
@@ -133,7 +139,7 @@ folder to Overleaf and compile there — the document uses only standard package
 
 ## How correctness is enforced
 
-- **`check_report.py`** re-derives **140 quantitative claims** straight from the
+- **`check_report.py`** re-derives **172 quantitative claims** straight from the
   raw CSV and asserts each one appears in `DAS732_A1_Report.tex`. Figures the
   report deliberately rounds (e.g. "≈19,900") are checked by verifying the
   rounding, not by demanding the exact value. It exits non-zero on any mismatch,
