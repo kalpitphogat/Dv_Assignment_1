@@ -928,6 +928,268 @@ Deaths \emph{per event}& $\times 0.58$ & $< 0.001$ & 0.38\\
 \end{table}
 
 %=======================================================================
+\section{Supplementary Views: One Drill-Down per Task Set}
+\label{sec:supp}
+%=======================================================================
+
+Each task set above closes on findings that invite further questions. This
+section answers them with three additional figures per task set, in the same
+design conventions as Section~3. They are grouped here, after the three task
+sets, so that the numbering of Figures~\ref{fig:types}--\ref{fig:decoupling}
+--- and every cross-reference to them --- stays exactly as it was. Each
+inference below opens with a plain-language description of what is happening
+in the chart before the numbers are read off it.
+
+\subsection*{Task Set A --- three more temporal views}
+
+\taskhead{A1.6}{Which flood is actually rising?}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\figw]{Fig18}
+\caption[Flood events by subtype]{\textbf{Flood events per year, split by
+subtype (5-year moving average).} Figure~\ref{fig:trend} showed that floods
+drive most of the post-1970 rise; a stacked area chart is used again here,
+now one level down, because the question is which flood \emph{mechanism}
+grows fastest inside that already-growing total, and stacking keeps the
+composition and the total legible in one image.}
+\label{fig:floodsubtype}
+\end{figure}
+
+\inference What is happening in this chart: the blue band (riverine flooding)
+is thin and flat until about 1970, then grows faster than every other band and
+becomes the largest single contributor to the whole stack by the 1990s. Of the
+5{,}764 recorded flood events, riverine flooding accounts for
+\textbf{46.1\%}, unspecified floods for 38.3\%, flash floods for 14.2\%, and
+coastal floods for only 1.5\%. The practical reading is that the flood trend in
+Figure~\ref{fig:trend} is not a generic rise in ``flooding'' --- it is
+overwhelmingly a rise in \textbf{river-basin flooding}, the subtype most
+directly linked to upstream land-use change, floodplain urbanisation, and
+extreme rainfall, which points mitigation spending toward watershed and
+river-basin management specifically rather than flood defence in general.
+
+\taskhead{A1.7}{Which hazards grew, and when?}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\figw]{Fig19}
+\caption[Events by hazard type and decade]{\textbf{Recorded events by hazard
+type and decade, 1900s--2020s.} A heatmap is used because the question is a
+categorical $\times$ ordinal grid of one measure; the colour ramp is
+logarithmic because the cells span four orders of magnitude, and every cell
+prints its value so no number is read from colour alone. The 2020s column
+covers 2020--2022 only.}
+\label{fig:typedecade}
+\end{figure}
+
+\inference What is happening in this chart: reading left to right, every row
+lightens-to-darkens, but the transition happens at different columns and to
+different depths. The flood row goes from pale (6 events in the 1900s) to the
+darkest cell on the grid (1{,}720 in the 2000s); the earthquake row darkens
+much more gently, from 38 to 289 over the same span. Extreme temperature is
+almost absent before the 1950s and reaches 224 in the 2000s. Two things follow.
+First, the post-1970 rise seen in Figure~\ref{fig:trend} is present in
+\emph{every} hazard, which is what a change in the recording instrument looks
+like. Second, it is far larger for floods and heatwaves than for earthquakes,
+which is what a change in the hazards themselves looks like. The next figure
+separates the two.
+
+\taskhead{A1.8}{How much of the rise is record-keeping? A control}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\figw]{Fig20}
+\caption[Annualised event rate before and after 1970, per hazard]{\textbf{Recorded
+events per year in 1900--1969 versus 1970--2022, for each of the six major
+hazards.} A dumbbell chart is used because the question is the size of a
+before--after gap per category, and the connecting bar makes each gap a
+single visual object. The $x$-axis is logarithmic so that hazards recorded ten
+times less often still show a legible gap. Earthquakes are shaded as the
+control: a magnitude-6 earthquake is physically hard to miss even in 1950, so
+their multiplier is an estimate of reporting improvement alone.}
+\label{fig:control}
+\end{figure}
+
+\inference What is happening in this chart: every dumbbell points right ---
+the blue (post-1970) dot is always to the right of the orange (pre-1970) one
+--- but the bars are very different lengths. Earthquakes, the control hazard,
+rose from 5.8 to 22.2 events per year, a factor of \textbf{3.8}. That
+\textbf{3.8$\times$} is the best available estimate of how much better the
+world got at \emph{writing down} disasters. Storms and droughts rose
+11.1$\times$, landslides 15.4$\times$, floods \textbf{26.2$\times$} (3.96 to
+103.5 events per year) and extreme temperature \textbf{41.3$\times$}. Dividing
+by the earthquake baseline, floods still show a roughly seven-fold and
+heatwaves a roughly eleven-fold rise that record-keeping cannot account for.
+This is the cleanest evidence in the report that the hydro-meteorological rise
+is real, and it is why Section~\ref{sec:taskA}'s conclusion is ``partly
+reporting, partly real'' rather than either alone.
+
+\subsection*{Task Set B --- three more geographic views}
+
+\taskhead{B1.6}{Is exposure narrow or broad?}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\figw]{Fig21}
+\caption[Event volume against hazard diversity]{\textbf{Total recorded events
+(log $x$-axis) against the number of distinct hazard types ever recorded, for
+the 20 most-exposed countries, coloured by each country's single most frequent
+hazard.} A scatter plot is used, not a ranked bar chart, because the question
+is the joint distribution of two independent measures --- volume and
+diversity --- and a bar chart can only rank one measure at a time.}
+\label{fig:diversity}
+\end{figure}
+
+\inference What is happening in this chart: the points do not fall on a rising
+diagonal, which is the finding itself --- volume and diversity are not the same
+axis. \textbf{India (688 events) and Peru (195 events) sit highest on the
+diversity axis with 10 distinct hazard types each}, even though India ranks
+only 3rd by volume and Peru 16th. The two highest-volume countries, the United
+States (1{,}119 events) and China (984), sit lower, at 8 and 9 types
+respectively. India and Peru owe their diversity to spanning several climate
+and geological zones at once (Himalayan, coastal and arid for India; coastal,
+Andean and Amazonian for Peru), whereas the United States and China's totals
+are driven by fewer, very frequently repeated hazards (storms and floods).
+The practical implication is that a single national risk score conflates two
+different planning problems: a high-volume, low-diversity country needs deep
+capacity against one or two hazard types, while a high-diversity country needs
+broad capacity across many.
+
+\taskhead{B1.7}{Has the map of exposure moved?}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\figw]{Fig22}
+\caption[Country rank before and after 1970]{\textbf{Rank by recorded events
+in 1900--1969 versus 1970--2022, for the 15 most-exposed countries of the
+modern era.} A slopegraph is used because the question is change in relative
+position between exactly two states; the slope of each line \emph{is} the
+finding, and movers of ten or more places are drawn in colour. Countries tied
+on rank share one label line.}
+\label{fig:rankshift}
+\end{figure}
+
+\inference What is happening in this chart: most lines are nearly horizontal
+--- the United States is 1st in both eras, China moves 4th to 2nd --- but
+three lines climb steeply from the bottom of the left axis. \textbf{Vietnam
+rises from 49th to 9th (40 places)}, Afghanistan from 49th to 15th (34 places)
+and Australia from 35th to 12th (23 places). Two lines slope the other way:
+Japan falls from 2nd to 7th and Iran from 7th to 11th. Because rank is
+zero-sum, a 40-place climb means Vietnam's record grew faster than that of
+forty other countries, not merely faster than its own past. The geography of
+exposure in Figures~\ref{fig:mapevents}--\ref{fig:leaderboards} is therefore
+a modern snapshot, not a permanent map: a risk assessment built on the
+pre-1970 record would have missed the country that is now ninth in the world.
+
+\taskhead{B1.8}{When did each hotspot's record start growing?}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\figw]{Fig23}
+\caption[Top-15 countries by decade]{\textbf{Recorded events per decade for
+the 15 most-exposed countries, ordered by all-time total.} A heatmap is used
+because it merges the country ranking of Figure~\ref{fig:mapevents} with the
+decade structure of Figure~\ref{fig:typedecade} into one scannable grid;
+the log colour ramp and printed values follow the same rules as the other
+heatmaps.}
+\label{fig:countrydecade}
+\end{figure}
+
+\inference What is happening in this chart: two distinct row shapes appear.
+The United States and China rows darken gradually --- 40 events in the 1950s,
+125 in the 1980s, 254 in the 1990s for the United States --- an
+early-and-steady pattern. The Vietnam, Brazil and Australia rows are blank or
+single-digit until the 1940s--1950s, then jump within two or three columns to
+the same shade as the top rows (Vietnam: 2 in the 1950s, 77 in the 2000s), a
+late-and-sudden pattern. This is the same finding as Figure~\ref{fig:rankshift}
+seen from the other side, and it matters for planning: an early-and-steady
+country has had decades to build institutions around its exposure, whereas a
+late-and-sudden one has had to do so within a generation.
+
+\subsection*{Task Set C --- three more impact views}
+
+\taskhead{C1.6}{What does the CPI adjustment actually do?}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\figw]{Fig24}
+\caption[CPI and nominal vs.\ real damage]{\textbf{Left: the US CPI series
+used throughout this report for inflation adjustment, shown directly. Right:
+the same raw annual damage total before (nominal) and after (real, 2022 USD)
+adjustment.} Every other damage figure in this report uses only the adjusted
+series; this is the one figure that shows the adjustment mechanism itself,
+because a reader should be able to see what the correction does, not just
+trust that it was applied.}
+\label{fig:cpi}
+\end{figure}
+
+\inference What is happening in this chart: the left panel is a smooth,
+monotonically rising curve, which is expected of a price index; the right
+panel's two lines diverge visibly as the years get older, with the real
+(blue) line running consistently above the nominal (orange) line before
+1980. The CPI itself rose \textbf{35-fold} from 1900 (index 2.8, base
+2022 = 100) to 2022 (index 100), so a disaster reported as causing \$1
+billion of damage in 1900 represents roughly \$35 billion of real 2022
+purchasing power --- the gap between the two lines in the right panel at any
+given year is exactly that year's CPI ratio to 2022, no more and no less.
+This is the reason every damage-based claim elsewhere in this report (Task
+Set C, Figures~\ref{fig:damage} and \ref{fig:decoupling}, and the
+Task Set B leaderboards) is stated in real terms: a raw, unadjusted
+comparison across a 123-year window would silently understate every disaster
+before roughly 1980 relative to one after it.
+
+\taskhead{C1.7}{Does a deadly disaster also mean a costly one?}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\figw]{Fig25}
+\caption[Country lethality against cost per event]{\textbf{Deaths per recorded
+event against real damage per recorded event, for the 20 most-exposed
+countries; bubble area is the number of events.} Both axes are logarithmic
+because each spans three orders of magnitude. Medians are not used here
+because the question is each country's long-run per-event burden, so totals
+divided by events are the right statistic. The grey lines mark the median of
+each axis, dividing the plane into four quadrants.}
+\label{fig:wealth}
+\end{figure}
+
+\inference What is happening in this chart: the bubbles do not form a diagonal
+band; they scatter across all four quadrants. In the top-left, the United
+States (40 deaths, \$1{,}996 million per event) and Japan (634 deaths,
+\$2{,}260 million) lose a great deal of money and comparatively few lives. In
+the bottom-right, Bangladesh (7{,}923 deaths, \$137 million per event) is the
+mirror image. Afghanistan sits alone at the bottom with \$8 million per event.
+The Spearman rank correlation between the two axes is \textbf{0.16 ($p =
+0.51$)}: knowing how lethal a country's disasters are tells you nothing about
+how expensive they are. Read together with Figure~\ref{fig:lethality}, this is
+the country-level form of the report's central claim --- wealth converts
+exposure into property loss rather than into death.
+
+\taskhead{C1.8}{The third burden: who is displaced?}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\figw]{Fig26}
+\caption[People affected per event by hazard and decade]{\textbf{People
+affected per recorded event, by hazard and decade, 1950s--2020s.} This is the
+exact counterpart of Figure~\ref{fig:heatmap} with \emph{affected} in place of
+\emph{deaths}: same rows, same columns, same log colour ramp, so the two grids
+can be laid side by side and read cell for cell.}
+\label{fig:affected}
+\end{figure}
+
+\inference What is happening in this chart: the drought row is uniformly dark
+across every column from the 1960s onward, while in Figure~\ref{fig:heatmap}
+the same row fades from dark to pale. Drought's deaths per event fell from
+29{,}051 in the 1960s to 53 in the 2020s, but its people affected per event
+stayed near \textbf{4 million} throughout (4.0 million in the 2010s). The two
+grids together say that famine early-warning did exactly one thing: it stopped
+droughts from killing, without stopping them from disrupting. Floods show the
+same shape on a smaller scale (1.7 million affected per event in the 1990s).
+Severity, in other words, has three faces --- death, cost and displacement ---
+and a hazard can retreat on one while standing still on another.
+
+%=======================================================================
 \section{The Data Story}
 \label{sec:story}
 %=======================================================================
@@ -1105,17 +1367,23 @@ Tableau-ready extract and the pipeline diagram (Figure~\ref{fig:pipeline});
 designed and implemented Task Set A (Figures~\ref{fig:types}--\ref{fig:trimmed}),
 including the reporting-bias diagnostic (Figure~\ref{fig:reporting}) and the
 trimmed-deaths robustness test (Figure~\ref{fig:trimmed}) that qualified the
-team's headline finding; wrote Sections 2, 3 and 4; presents the preprocessing
-minute and Task Set A in the video.
+team's headline finding, the flood-subtype drill-down
+(Figure~\ref{fig:floodsubtype}), the type-by-decade heatmap
+(Figure~\ref{fig:typedecade}) and the earthquake-control comparison
+(Figure~\ref{fig:control}); wrote Sections 2, 3 and 4; presents the
+preprocessing minute and Task Set A in the video.
 
 \subsection*{\memberB~(\rollB) --- Task Set B (\emph{Where?})}
 Designed and implemented Task Set B
 (Figures~\ref{fig:mapevents}--\ref{fig:lethality}); built the Plotly choropleth
 pipeline including the logarithmic colour scale and ISO-3 joins; produced the
 four-panel country leaderboards, the concentration curves and the lethality
-ranking; identified the events/deaths/damage rank mismatch (United States 1st
-versus 23rd) that became a central thread of the data story; wrote Sections 5 and
-9; presents Task Set B in the video.
+ranking, the volume-versus-diversity scatter (Figure~\ref{fig:diversity}),
+the era rank-shift slopegraph (Figure~\ref{fig:rankshift}) and the
+country-by-decade heatmap (Figure~\ref{fig:countrydecade});
+identified the events/deaths/damage rank mismatch (United States 1st versus
+23rd) that became a central thread of the data story; wrote Sections 5 and 9;
+presents Task Set B in the video.
 
 \subsection*{\memberC~(\rollC) --- Task Set C (\emph{What?})}
 Designed and implemented Task Set C
@@ -1124,7 +1392,10 @@ impact-signature chart, the deadliness--cost plane, the real-damage time series,
 the lethality heatmap and the indexed decoupling chart; ran the log-linear trend
 fits and the Spearman decoupling test, and established that annual deaths carry
 no significant post-1970 trend; found the rising extreme-temperature lethality;
-wrote Sections 6 and 8; presents Task Set C in the video.
+produced the CPI-adjustment explainer (Figure~\ref{fig:cpi}), the
+country lethality-versus-cost scatter (Figure~\ref{fig:wealth}) and the
+affected-per-event heatmap (Figure~\ref{fig:affected}); wrote Sections 6
+and 8; presents Task Set C in the video.
 
 \subsection*{Jointly}
 The guiding question and the three-way task decomposition

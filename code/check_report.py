@@ -248,6 +248,80 @@ chk("median damage 2000s", f"\\${ann.loc[2003:2022, 'damage'].median() / 1e9:.0f
 chk("median deaths 1970s", f"{ann.loc[1970:1989, 'deaths'].median():,.0f} to")
 chk("median deaths 2000s", f"to {ann.loc[2003:2022, 'deaths'].median():,.0f}")
 
+# --- supplementary views (Fig18-20) ------------------------------------------
+flood = df[df.type == "Flood"]
+fsub = flood.groupby("subtype").events.sum()
+fshare = fsub / fsub.sum() * 100
+chk("flood total events (Fig18)", f"{int(fsub.sum()):,} recorded flood events")
+chk("riverine share", f"{fshare['Riverine flood']:.1f}\\%")
+chk("unspecified flood share", f"{fshare['Flood (unspecified)']:.1f}\\%")
+chk("flash flood share", f"{fshare['Flash flood']:.1f}\\%")
+chk("coastal flood share", f"{fshare['Coastal flood']:.1f}\\%")
+
+div = df.groupby("country").type.nunique()
+ev = df.groupby("country").events.sum()
+chk("India diversity", f"India ({ev['India']:,} events) and Peru ({ev['Peru']:,} events)")
+chk("India/Peru type count", f"{div['India']} distinct hazard types each")
+chk("India events rank", f"India ranks\nonly {int(ev.rank(ascending=False, method='min')['India'])}rd by volume")
+chk("Peru events rank", f"Peru {int(ev.rank(ascending=False, method='min')['Peru'])}th")
+chk("US diversity", f"at {div['United States of America (the)']} and {div['China']} types")
+
+cpi_y = df.groupby("year").cpi.mean()
+chk_round("CPI 1900-2022 ratio", cpi_y[2022] / cpi_y[1900], 0, "35-fold", 35)
+chk("CPI 1900 index", f"index {cpi_y[1900]:.1f}, base")
+
+# --- supplementary views (Fig21-26) ------------------------------------------
+TOP6 = ["Flood", "Storm", "Earthquake", "Drought", "Landslide", "Extreme temperature"]
+td = df[df.type.isin(TOP6)].pivot_table(index="type", columns="decade",
+                                         values="events", aggfunc="sum").fillna(0)
+chk("flood 1900s->2000s (Fig21)", f"pale ({int(td.loc['Flood', 1900])} events in the 1900s)")
+chk("flood 2000s cell", f"({int(td.loc['Flood', 2000]):,} in the 2000s)")
+chk("quake 1900s->2000s", f"from {int(td.loc['Earthquake', 1900])} to {int(td.loc['Earthquake', 2000])}")
+chk("ext temp 2000s", f"reaches {int(td.loc['Extreme temperature', 2000])} in the 2000s")
+
+pre_, post_ = df[df.era == "1900-1969"], df[df.era == "1970-2022"]
+rate = pd.DataFrame({"pre": pre_.groupby("type").events.sum() / 70,
+                     "post": post_.groupby("type").events.sum() / 53}).reindex(TOP6)
+rate["mult"] = rate.post / rate.pre
+chk("quake rate pre/post", f"from {rate.loc['Earthquake','pre']:.1f} to {rate.loc['Earthquake','post']:.1f} events per year")
+chk_round("quake multiplier", rate.loc["Earthquake", "mult"], 1, "3.8$\\times$", 3.8)
+chk_round("flood multiplier", rate.loc["Flood", "mult"], 1, "26.2$\\times$", 26.2)
+chk("flood rate pre/post", f"({rate.loc['Flood','pre']:.2f} to\n{rate.loc['Flood','post']:.1f} events per year)")
+chk_round("ext temp multiplier", rate.loc["Extreme temperature", "mult"], 1, "41.3$\\times$", 41.3)
+chk_round("landslide multiplier", rate.loc["Landslide", "mult"], 1, "15.4$\\times$", 15.4)
+chk_round("storm multiplier", rate.loc["Storm", "mult"], 1, "11.1$\\times$", 11.1)
+
+ev_pre = pre_.groupby("country").events.sum(); ev_post = post_.groupby("country").events.sum()
+rk_pre = ev_pre.rank(ascending=False, method="min"); rk_post = ev_post.rank(ascending=False, method="min")
+def rk(c): return int(rk_pre[c]), int(rk_post[c])
+vp, vq = rk("Viet Nam");    chk("Vietnam rank shift", f"rises from {vp}th to {vq}th ({vp - vq} places)")
+ap, aq = rk("Afghanistan"); chk("Afghanistan rank shift", f"from {ap}th to {aq}th ({ap - aq} places)")
+up, uq = rk("Australia");   chk("Australia rank shift", f"from {up}th to {uq}th ({up - uq} places)")
+jp, jq = rk("Japan");       chk("Japan rank shift", f"Japan falls from {jp}nd to {jq}th")
+ip, iq = rk("Iran (Islamic Republic of)"); chk("Iran rank shift", f"Iran from {ip}th to {iq}th")
+
+cdd = df.pivot_table(index="country", columns="decade", values="events", aggfunc="sum").fillna(0)
+us = "United States of America (the)"
+chk("US decade cells (Fig24)", f"{int(cdd.loc[us,1950])} events in the 1950s,\n{int(cdd.loc[us,1980])} in the 1980s, {int(cdd.loc[us,1990])} in the 1990s")
+chk("Vietnam decade cells", f"(Vietnam: {int(cdd.loc['Viet Nam',1950])} in the 1950s, {int(cdd.loc['Viet Nam',2000])} in the 2000s)")
+
+cc = (df.groupby("country").agg(events=("events","sum"), deaths=("deaths","sum"),
+                               damage=("damage_real","sum")).nlargest(20, "events"))
+cc["dpe"] = cc.deaths / cc.events; cc["dmg"] = cc.damage / cc.events / 1e6
+rho, pval = stats.spearmanr(cc.dpe, cc.dmg)
+chk("US per-event (Fig25)", f"States ({cc.loc[us,'dpe']:.0f} deaths, \\${cc.loc[us,'dmg']:,.0f} million per event)")
+chk("Japan per-event", f"Japan ({cc.loc['Japan','dpe']:.0f} deaths,\n\\${cc.loc['Japan','dmg']:,.0f} million)")
+chk("Bangladesh per-event", f"Bangladesh ({cc.loc['Bangladesh','dpe']:,.0f} deaths, \\${cc.loc['Bangladesh','dmg']:.0f} million per event)")
+chk("Afghanistan per-event", f"\\${cc.loc['Afghanistan','dmg']:.0f} million per event")
+chk("wealth spearman", f"{rho:.2f} ($p =\n{pval:.2f}$)")
+
+sub_ = df[df.type.isin(TOP6) & (df.year >= 1950)]
+ape = (sub_.pivot_table(index="type", columns="decade", values="affected", aggfunc="sum")
+       / sub_.pivot_table(index="type", columns="decade", values="events", aggfunc="sum"))
+chk_round("drought affected/event 2010s (Fig26)", ape.loc["Drought", 2010] / 1e6, 1, "4.0 million in the 2010s", 4.0)
+chk_round("flood affected/event 1990s", ape.loc["Flood", 1990] / 1e6, 1, "1.7 million affected per event in the 1990s", 1.7)
+
+
 # ------------------------------------------------------------------- run ----
 def normalise(t: str) -> str:
     t = t.replace("{,}", ",")          # LaTeX thin-space thousands separator
@@ -264,7 +338,7 @@ def structural_checks(tex: str) -> list[tuple[str, str]]:
     """
     problems: list[tuple[str, str]] = []
     inc = re.findall(r"\\includegraphics\[[^\]]*\]\{(Fig\d+)\}", tex)
-    want = [f"Fig{i}" for i in range(1, 18)]
+    want = [f"Fig{i}" for i in range(1, 27)]
     if inc != want:
         problems.append(("figure include order",
                          f"document order {inc} != {want}"))

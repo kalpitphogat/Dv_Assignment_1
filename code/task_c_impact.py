@@ -4,7 +4,7 @@ DAS732 A1 - TASK SET C: "WHAT?"  The impact signature of each hazard, 1900-2022.
 Guiding sub-question: Which hazards kill, which displace, and which cost money -
 and are they the same hazards?
 
-Produces Fig13 - Fig17.
+Produces Fig13 - Fig17 and Fig24 - Fig26.
 """
 import numpy as np
 import pandas as pd
@@ -242,5 +242,109 @@ titleblock(fig, "Costs rose, deaths did not follow",
 fig.subplots_adjust(top=0.79, right=0.82)
 footnote(fig, y=-0.02)
 save(fig, "Fig17.png", "indexed decoupling")
+
+# ---------------------------------------------------------------- Fig 24 ----
+# C1.6 EXPLAIN: what does the CPI adjustment actually do to the damage figure?
+yr = (df.groupby("year")
+        .agg(cpi=("cpi", "mean"), nominal=("damage_nominal", "sum"),
+             real=("damage_real", "sum"))
+        .dropna())
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11.2, 4.6))
+
+ax1.plot(yr.index, yr.cpi, color=CAT[0], lw=2.2)
+ax1.set_title("US CPI, 1900-2022", fontsize=12, fontweight="bold", loc="left")
+ax1.set_ylabel("CPI index (2022 = 100)")
+ax1.set_xlabel("Year")
+despine(ax1)
+
+ax2.plot(yr.index, yr.nominal / 1e9, color=CAT[3], lw=2, label="Nominal (as reported)")
+ax2.plot(yr.index, yr.real / 1e9, color=CAT[0], lw=2.2, label="Real (2022 USD)")
+ax2.set_yscale("log")
+ax2.set_title("Reported damage: nominal vs. real", fontsize=12, fontweight="bold", loc="left")
+ax2.set_ylabel("Damage, $ billion per year (log scale)")
+ax2.set_xlabel("Year")
+ax2.legend(loc="upper left", fontsize=9)
+despine(ax2)
+
+fig.suptitle("Why every damage figure in this report is inflation-adjusted",
+             fontsize=15, fontweight="bold", x=0.02, y=0.99, ha="left")
+fig.text(0.02, 0.88,
+          "Left: the CPI series used for adjustment, shown directly rather than only\n"
+          "through its effect. Right: the same raw damage series before and after\n"
+          "adjustment - the nominal series understates old disasters relative to\n"
+          "recent ones by exactly the ratio on the left.",
+          fontsize=10.5, color=INK_SEC, va="top")
+fig.subplots_adjust(top=0.68, wspace=0.28)
+footnote(fig, y=-0.02)
+save(fig, "Fig24.png", "CPI and nominal vs real damage")
+
+# ---------------------------------------------------------------- Fig 25 ----
+# C1.7 RELATE at country level: does a deadly disaster also mean a costly one?
+from emdat_common import heatmap_log
+SHORT = {"United States of America (the)": "United States",
+         "Iran (Islamic Republic of)": "Iran", "Philippines (the)": "Philippines",
+         "Russian Federation (the)": "Russia", "Viet Nam": "Vietnam"}
+cc = (df.groupby("country")
+        .agg(events=("events", "sum"), deaths=("deaths", "sum"),
+             damage=("damage_real", "sum"))
+        .nlargest(20, "events"))
+cc["dpe"] = cc.deaths / cc.events
+cc["dmg_pe"] = cc.damage / cc.events / 1e6
+cc["label"] = cc.index.to_series().replace(SHORT)
+rho, pval = stats.spearmanr(cc.dpe, cc.dmg_pe)
+
+fig, ax = plt.subplots(figsize=(9.8, 6.6))
+sizes = 60 + 700 * (cc.events / cc.events.max())
+ax.scatter(cc.dpe, cc.dmg_pe, s=sizes, color=CAT[0], alpha=0.8,
+           edgecolor=SURFACE, linewidth=1.8, zorder=3)
+OFF = {"United States": (0, 14, "center"), "Japan": (0, 14, "center"),
+       "Italy": (-12, 6, "right"), "China": (12, 4, "left"),
+       "Australia": (0, -16, "center"), "Bangladesh": (12, -2, "left"),
+       "India": (12, 4, "left"), "Afghanistan": (0, -16, "center"),
+       "Philippines": (0, -16, "center"), "Vietnam": (-12, -6, "right"),
+       "Russia": (-12, 6, "right"), "Indonesia": (12, 8, "left"),
+       "Peru": (12, -10, "left"), "Turkey": (-12, 8, "right"),
+       "Iran": (12, -10, "left"), "Pakistan": (12, 8, "left")}
+for name, r in cc.iterrows():
+    dx, dy, ha = OFF.get(r.label, (10, 4, "left"))
+    ax.annotate(r.label, (r.dpe, r.dmg_pe), xytext=(dx, dy),
+                textcoords="offset points", ha=ha, fontsize=9, color=INK)
+ax.set_xscale("log"); ax.set_yscale("log")
+ax.set_xlabel("Deaths per recorded event (log scale)")
+ax.set_ylabel("Real damage per recorded event, US$ millions (log scale)")
+ax.xaxis.set_major_formatter(HUMAN); ax.yaxis.set_major_formatter(HUMAN)
+ax.axhline(cc.dmg_pe.median(), color=GRID, lw=1, zorder=1)
+ax.axvline(cc.dpe.median(), color=GRID, lw=1, zorder=1)
+despine(ax)
+ax.text(0.98, 0.03, f"Spearman rho = {rho:.2f}, p = {pval:.2f}", transform=ax.transAxes,
+        ha="right", va="bottom", fontsize=9.5, color=INK_SEC, style="italic")
+titleblock(fig, "Wealth turns deaths into bills: lethality and cost per event are unrelated",
+           "The 20 most-exposed countries; bubble size is the number of events. The "
+           "United States and Japan lose ~$2 billion per event and few lives; "
+           "Bangladesh loses 7,923 lives and $137 million per event. Rank correlation "
+           "between the two axes is 0.16 (p = 0.51) - effectively none.")
+fig.subplots_adjust(top=0.80)
+footnote(fig, y=-0.02)
+save(fig, "Fig25.png", "country lethality vs cost per event")
+
+# ---------------------------------------------------------------- Fig 26 ----
+# C1.8 COMPARE / TREND: the displacement burden, the third face of severity.
+sub = df[df.type.isin(TOP6) & (df.year >= 1950)]
+a_ = sub.pivot_table(index="type", columns="decade", values="affected", aggfunc="sum")
+e_ = sub.pivot_table(index="type", columns="decade", values="events", aggfunc="sum")
+ape = (a_ / e_).reindex(TOP6)
+
+fig, ax = plt.subplots(figsize=(10.2, 4.8))
+heatmap_log(ax, ape, "People affected per event (log scale)",
+            fmt=lambda v: human(v), cbar_ticks=(2, 3, 4, 5, 6),
+            cbar_labels=("100", "1K", "10K", "100K", "1M"))
+titleblock(fig, "Drought stopped killing but never stopped displacing",
+           "People affected per recorded event, by hazard and decade, 1950s-2020s. "
+           "Drought's deaths per event fell from 29,051 to 53 (Figure 16); its people "
+           "affected per event stayed near 4 million. The 2020s column covers 2020-2022.")
+fig.subplots_adjust(top=0.735, left=0.16)
+footnote(fig, y=-0.03)
+save(fig, "Fig26.png", "affected-per-event heatmap")
 
 print("Task C complete.")

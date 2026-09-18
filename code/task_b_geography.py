@@ -4,7 +4,7 @@ DAS732 A1 - TASK SET B: "WHERE?"  The geography of exposure, 1900-2022.
 Guiding sub-question: Where does the disaster burden fall, and does the place
 that records the most disasters also suffer the most harm?
 
-Produces Fig8 - Fig12.  Fig8/Fig9 are Plotly choropleths exported through
+Produces Fig8 - Fig12 and Fig21 - Fig23.  Fig8/Fig9 are Plotly choropleths exported through
 kaleido; the rest are matplotlib.
 """
 import numpy as np
@@ -192,7 +192,7 @@ fig.subplots_adjust(top=0.825)
 footnote(fig, y=-0.02)
 save(fig, "Fig11.png", "concentration curves")
 
-# ---------------------------------------------------------------- Fig 10 ----
+# ---------------------------------------------------------------- Fig 12 ----
 # B1.5 DERIVE / RANK: lethality, once exposure is held roughly constant.
 top20 = c.nlargest(20, "events").sort_values("deaths_per_event")
 fig, ax = plt.subplots(figsize=(9.8, 6.6))
@@ -215,5 +215,99 @@ titleblock(fig, "Among equally disaster-prone countries, lethality differs by a 
 fig.subplots_adjust(top=0.80)
 footnote(fig, y=-0.02)
 save(fig, "Fig12.png", "lethality among the most-exposed countries")
+
+# ---------------------------------------------------------------- Fig 21 ----
+# B1.6 DERIVE: is exposure narrow (one hazard) or broad (many hazards)?
+diversity = df.groupby("country")["type"].nunique()
+c["diversity"] = c["country"].map(diversity)
+dom_type = (df.groupby(["country", "type"])["events"].sum()
+              .groupby(level=0).idxmax().apply(lambda t: t[1]))
+c["dominant"] = c["country"].map(dom_type)
+top20b = c.nlargest(20, "events").copy()
+
+TYPE_COLOR = {t: CAT[i % len(CAT)] for i, t in enumerate(sorted(c["dominant"].dropna().unique()))}
+fig, ax = plt.subplots(figsize=(9.6, 6.4))
+for t in top20b["dominant"].unique():
+    sub = top20b[top20b["dominant"] == t]
+    ax.scatter(sub["events"], sub["diversity"], s=180, color=TYPE_COLOR[t],
+               edgecolor=SURFACE, linewidth=1.2, label=t, zorder=3)
+for _, row in top20b.iterrows():
+    ax.annotate(row["label"], (row["events"], row["diversity"]),
+                xytext=(6, 4), textcoords="offset points", fontsize=8.5,
+                color=INK_SEC)
+ax.set_xscale("log")
+ax.set_xlabel("Total recorded events, 1900-2022 (log scale)")
+ax.set_ylabel("Number of distinct hazard types recorded")
+despine(ax)
+ax.legend(loc="lower right", fontsize=8, ncol=2)
+titleblock(fig, "High event volume and broad hazard diversity are different things",
+           "The 20 countries with the most recorded events: total events (log x-axis) "
+           "against how many distinct hazard types each has ever recorded. A scatter "
+           "plot is used because the question is the joint distribution of two "
+           "independent measures, not a ranking on either alone.")
+fig.subplots_adjust(top=0.82)
+footnote(fig, y=-0.02)
+save(fig, "Fig21.png", "event volume vs hazard diversity")
+
+# ---------------------------------------------------------------- Fig 22 ----
+# B1.7 COMPARE across eras: has the geography of exposure moved?
+from emdat_common import heatmap_log
+pre = df[df.era == "1900-1969"].groupby("country").events.sum()
+post = df[df.era == "1970-2022"].groupby("country").events.sum()
+rk_pre = pre.rank(ascending=False, method="min")
+rk_post = post.rank(ascending=False, method="min")
+top15 = post.nlargest(15).index
+sl = pd.DataFrame({"pre": rk_pre.reindex(top15), "post": rk_post.reindex(top15)})
+sl["label"] = sl.index.to_series().replace(SHORT)
+sl["shift"] = sl.pre - sl.post
+
+fig, ax = plt.subplots(figsize=(8.6, 7.6))
+for name, r in sl.iterrows():
+    big = abs(r["shift"]) >= 10
+    col = CAT[1] if r["shift"] >= 10 else (CAT[0] if big else INK_MUTED)
+    ax.plot([0, 1], [r.pre, r.post], color=col, lw=2.6 if big else 1.4,
+            marker="o", ms=7 if big else 5, markeredgecolor=SURFACE,
+            markeredgewidth=1.2, zorder=3 if big else 2, alpha=1 if big else 0.75)
+# Tied ranks share one label line so names never overprint.
+for side, col_, x, ha in (("pre", "pre", -0.04, "right"), ("post", "post", 1.04, "left")):
+    for rank, grp in sl.groupby(col_):
+        names = ", ".join(grp.label)
+        big = (grp["shift"].abs() >= 10).any()
+        txt = f"{names}  {int(rank)}" if side == "pre" else f"{int(rank)}  {names}"
+        ax.text(x, rank, txt, ha=ha, va="center", fontsize=9.5,
+                color=INK if big else INK_SEC, fontweight="bold" if big else "normal")
+ax.invert_yaxis()
+ax.set_xlim(-0.75, 1.75)
+ax.set_xticks([0, 1])
+ax.set_xticklabels(["Rank, 1900-1969", "Rank, 1970-2022"], fontsize=11)
+ax.set_yticks([])
+ax.grid(False)
+despine(ax, keep=())
+titleblock(fig, "The map of exposure has moved: Vietnam climbed 40 places, Japan fell 5",
+           "Rank by recorded events before and after 1970 for the 15 most-exposed "
+           "countries today. A slopegraph is used because the question is change in "
+           "relative position between two states - the slope of each line is the finding.")
+fig.subplots_adjust(top=0.85, bottom=0.05)
+footnote(fig, y=-0.01)
+save(fig, "Fig22.png", "country rank shift across eras")
+
+# ---------------------------------------------------------------- Fig 23 ----
+# B1.8 LOCATE x TREND: when did each hotspot's record start growing?
+top15_all = c.nlargest(15, "events").sort_values("events", ascending=False)
+cd_ = (df[df.country.isin(top15_all.country)]
+         .pivot_table(index="country", columns="decade", values="events", aggfunc="sum")
+         .reindex(top15_all.country).fillna(0))
+cd_.index = cd_.index.to_series().replace(SHORT)
+
+fig, ax = plt.subplots(figsize=(11.2, 7.0))
+heatmap_log(ax, cd_, "Events per decade (log scale)",
+            cbar_ticks=(0, 1, 2), cbar_labels=("1", "10", "100"))
+titleblock(fig, "Two kinds of hotspot: early-and-steady versus late-and-sudden",
+           "Recorded events per decade for the 15 most-exposed countries, ordered by total. "
+           "The United States and China darken gradually from the 1950s; Vietnam, "
+           "Brazil and Australia record almost nothing before the 1950s, then jump.")
+fig.subplots_adjust(top=0.80, left=0.14)
+footnote(fig, y=-0.02)
+save(fig, "Fig23.png", "top-15 countries by decade")
 
 print("Task B complete.")
