@@ -12,7 +12,8 @@ Term 1 (2026–27) · Programming Assignment 1 · 3-member team
 | Kalpit | BT2024093 | Task Set C — *What?* Impact signature of hazards (Figs 13–17) |
 
 **Tableau workbook:** _[paste your Tableau Public URL here before submitting]_
-**Video demo:** _[paste the video link here before submitting]_
+**Video demo:** _[paste the video link here before submitting]_  
+**Slides:** `slides/DAS732_A1_Video_Demo.pptx` (18 slides, timed to 5:00, speaker notes included)
 
 ---
 
@@ -38,6 +39,15 @@ DAS732_A1_Submission/
 ├── Tableau_Guide.md              <- step-by-step rebuild of 6 views in Tableau
 ├── Video_Script.md               <- timed 5-minute demo script + checklist
 │
+├── slides/
+│   ├── DAS732_A1_Video_Demo.pptx <- 18-slide deck for the video demo
+│   └── DAS732_A1_Video_Demo.pdf  <- same deck as PDF, in case PowerPoint is not handy
+│
+├── ai_disclosures/               <- one filled AI disclosure per member (SIGN THESE)
+│   ├── AI_Disclosure_Lakshya_Jain_BT2024044.docx
+│   ├── AI_Disclosure_Arnav_Jain_BT2024233.docx
+│   └── AI_Disclosure_Kalpit_BT2024093.docx
+│
 ├── report/
 │   ├── DAS732_A1_Report.pdf      <- THE REPORT (submit this) — 29 pages
 │   └── DAS732_A1_Report.tex      <- LaTeX source; the PDF is built from it
@@ -58,6 +68,8 @@ DAS732_A1_Submission/
     ├── task_c_impact.py          <- Fig13–Fig17 (Task Set C)
     ├── build_report_pdf.py       <- runs pdflatex 3x and fails on any log problem
     ├── check_report.py           <- asserts all 127 numbers in the .tex against the data
+    ├── make_slides.js            <- builds the video-demo deck (node)
+    ├── make_ai_disclosures.py    <- fills the AI disclosure form per member
     └── run_all.py                <- regenerates everything above from the raw CSV
 ```
 
@@ -123,6 +135,17 @@ To rebuild only the PDF after editing the `.tex`:
 python code/build_report_pdf.py
 ```
 
+To rebuild the slide deck (needs Node and `npm install pptxgenjs`):
+
+```
+node code/make_slides.js
+```
+
+The deck pulls the figures straight from `images/`, so regenerating the charts
+and then rebuilding the deck keeps the two in step. **Every slide has speaker
+notes** carrying its timecode and the exact line to say — open the deck in
+Presenter View while recording.
+
 **No LaTeX installed?** Upload `report/DAS732_A1_Report.tex` and the `images/`
 folder to Overleaf and compile there — the document uses only standard packages
 (`graphicx`, `booktabs`, `tabularx`, `caption`, `hyperref`, `titlesec`,
@@ -143,6 +166,13 @@ folder to Overleaf and compile there — the document uses only standard package
 
 ## Method notes
 
+- **Every figure is explained in three steps.** The *caption* says what the
+  figure is and why that chart form was chosen; **How to read it** decodes the
+  picture — axes, what the marks and colours encode, whether a scale is
+  logarithmic, what the annotations mark; and **Inference** states what it
+  demonstrates. A reader can therefore pick up any single figure and understand
+  it without having read the ones before it.
+
 - **Rates over counts.** Because the event count partly measures reporting effort
   (Fig 5), the analysis prefers deaths per event, shares of totals, and damage per
   event wherever a raw count would mislead.
@@ -159,9 +189,11 @@ folder to Overleaf and compile there — the document uses only standard package
 
 - [x] Team names and roll numbers filled in (they live in six `\newcommand`
       lines at the top of `report/DAS732_A1_Report.tex` and propagate everywhere)
-- [ ] Attach each member's **signed AI declaration** on the form circulated by the
-      instructor. These are deliberately **not** in the report — the brief asks
-      for one per member, so all three must be submitted alongside it
+- [ ] **Read, correct and sign** your own AI disclosure in `ai_disclosures/`.
+      They are filled in on the instructor's form but **not** signed, and the
+      chat-transcript link is left blank on purpose. These are deliberately not
+      in the report — the brief asks for one per member, so all three go in
+      alongside it
 - [ ] Rebuild if you edit anything: `python code/build_report_pdf.py`
 - [ ] Publish the Tableau workbook and paste its URL above
 - [ ] Record and upload the video (≤ 5:00), paste the link above

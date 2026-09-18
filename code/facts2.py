@@ -1,3 +1,11 @@
+"""
+DAS732 A1 - verification harness, part 2.
+
+Second pass of the fact checks: sub-group composition, the costliest
+single records, reporting completeness by decade, per-event trends,
+the lethality grid behind Figure 16, and the country rank table.
+Run by run_all.py, which saves its output to facts2_output.txt.
+"""
 import pandas as pd, numpy as np
 from scipy import stats
 from emdat_common import load

@@ -4,18 +4,19 @@ DAS732 A1 - TASK SET B: "WHERE?"  The geography of exposure, 1900-2022.
 Guiding sub-question: Where does the disaster burden fall, and does the place
 that records the most disasters also suffer the most harm?
 
-Produces Fig8 - Fig12.  Fig8/Fig9 are Plotly choropleths exported through
+Produces Fig8 - Fig12, plus supplementary Fig20.  Fig8/Fig9 are Plotly choropleths exported through
 kaleido; the rest are matplotlib.
 """
 import numpy as np
 import pandas as pd
+from scipy import stats
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 
 from emdat_common import (load, use_report_style, despine, save, human, HUMAN,
                           CAT, SEQ, SURFACE, INK, INK_SEC, INK_MUTED,
-                          IMAGES, rounded_barh, titleblock, footnote,
-                          SOURCE_NOTE)
+                          IMAGES, GRID, rounded_barh, titleblock,
+                          footnote, SOURCE_NOTE)
 
 use_report_style()
 df = load()
@@ -217,3 +218,58 @@ footnote(fig, y=-0.02)
 save(fig, "Fig12.png", "lethality among the most-exposed countries")
 
 print("Task B complete.")
+
+
+# ======================= SUPPLEMENTARY (Task Set B) =========================
+
+# --------------------------------------------------------------- Fig 20 ----
+# B1.6 RELATE at country level: does a deadly disaster also mean a costly one?
+# Figure 12 showed lethality alone; this adds the money axis to the same 20
+# countries, which turns the report's "wealth converts exposure into property
+# loss" reading from an inference about rank mismatches into a direct test.
+cc = (df.groupby("country")
+        .agg(events=("events", "sum"), deaths=("deaths", "sum"),
+             damage=("damage_real", "sum"))
+        .nlargest(20, "events"))
+cc["dpe"] = cc.deaths / cc.events
+cc["dmg_pe"] = cc.damage / cc.events / 1e6
+cc["label"] = cc.index.to_series().replace(SHORT)
+rho, pval = stats.spearmanr(cc.dpe, cc.dmg_pe)
+
+fig, ax = plt.subplots(figsize=(9.8, 6.6))
+ax.scatter(cc.dpe, cc.dmg_pe, s=60 + 700 * (cc.events / cc.events.max()),
+           color=CAT[0], alpha=0.8, edgecolor=SURFACE, linewidth=1.8, zorder=3)
+OFF = {"United States": (0, 15, "center"), "Japan": (0, 15, "center"),
+       "Italy": (-13, 5, "right"), "China": (14, 4, "left"),
+       "Australia": (0, -17, "center"), "Bangladesh": (14, -2, "left"),
+       "India": (14, 4, "left"), "Afghanistan": (0, -17, "center"),
+       "Philippines": (0, -17, "center"), "Vietnam": (-13, -7, "right"),
+       "Russia": (-13, 6, "right"), "Indonesia": (14, 8, "left"),
+       "Peru": (14, -10, "left"), "Turkey": (-13, 8, "right"),
+       "Iran": (14, -10, "left"), "Pakistan": (14, 8, "left")}
+for _, r in cc.iterrows():
+    dx, dy, ha = OFF.get(r.label, (11, 4, "left"))
+    ax.annotate(r.label, (r.dpe, r.dmg_pe), xytext=(dx, dy),
+                textcoords="offset points", ha=ha, fontsize=9, color=INK)
+ax.set_xscale("log")
+ax.set_yscale("log")
+ax.set_xlabel("Deaths per recorded event (log scale)")
+ax.set_ylabel("Real damage per recorded event, US$ millions (log scale)")
+ax.xaxis.set_major_formatter(HUMAN)
+ax.yaxis.set_major_formatter(HUMAN)
+ax.axhline(cc.dmg_pe.median(), color=GRID, lw=1, zorder=1)
+ax.axvline(cc.dpe.median(), color=GRID, lw=1, zorder=1)
+despine(ax)
+ax.text(0.98, 0.03, f"Spearman rho = {rho:.2f}, p = {pval:.2f}",
+        transform=ax.transAxes, ha="right", va="bottom", fontsize=9.5,
+        color=INK_SEC, style="italic")
+titleblock(fig, "Wealth turns deaths into bills: lethality and cost per event are unrelated",
+           "The 20 most-exposed countries; bubble size is the number of recorded "
+           "events. The United States and Japan lose around $2 billion per event and "
+           "few lives; Bangladesh loses 7,923 lives and $137 million per event. The "
+           "rank correlation between the two axes is 0.16 (p = 0.51) - effectively none.")
+fig.subplots_adjust(top=0.80)
+footnote(fig, y=-0.02)
+save(fig, "Fig20.png", "country lethality vs cost per event")
+
+print("Task B supplementary complete.")

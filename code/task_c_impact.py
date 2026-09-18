@@ -4,7 +4,7 @@ DAS732 A1 - TASK SET C: "WHAT?"  The impact signature of each hazard, 1900-2022.
 Guiding sub-question: Which hazards kill, which displace, and which cost money -
 and are they the same hazards?
 
-Produces Fig13 - Fig17.
+Produces Fig13 - Fig17, plus supplementary Fig21 - Fig22.
 """
 import numpy as np
 import pandas as pd
@@ -15,7 +15,8 @@ from scipy import stats
 
 from emdat_common import (load, use_report_style, despine, save, human, HUMAN,
                           CAT, SEQ, SURFACE, INK, INK_SEC, INK_MUTED, GRID,
-                          SUBGROUP_ORDER, SUBGROUP_COLOR, titleblock, footnote)
+                          SUBGROUP_ORDER, SUBGROUP_COLOR, heatmap_log,
+                          titleblock, footnote)
 
 use_report_style()
 df = load()
@@ -244,3 +245,64 @@ footnote(fig, y=-0.02)
 save(fig, "Fig17.png", "indexed decoupling")
 
 print("Task C complete.")
+
+
+# ======================= SUPPLEMENTARY (Task Set C) =========================
+
+# --------------------------------------------------------------- Fig 21 ----
+# C1.6 EXPLAIN: what does the CPI adjustment actually do to the damage figure?
+# Section 2.2 states the adjustment as a formula; this shows it. It is also the
+# only figure that uses the CPI column directly.
+yr = (df.groupby("year")
+        .agg(cpi=("cpi", "mean"), nominal=("damage_nominal", "sum"),
+             real=("damage_real", "sum"))
+        .dropna())
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11.2, 4.6))
+ax1.plot(yr.index, yr.cpi, color=CAT[0], lw=2.2)
+ax1.set_title("US CPI, 1900-2022", fontsize=12, fontweight="bold", loc="left")
+ax1.set_ylabel("CPI index (2022 = 100)")
+ax1.set_xlabel("Year")
+despine(ax1)
+
+ax2.plot(yr.index, yr.nominal / 1e9, color=CAT[3], lw=2,
+         label="Nominal (as reported)")
+ax2.plot(yr.index, yr.real / 1e9, color=CAT[0], lw=2.2, label="Real (2022 USD)")
+ax2.set_yscale("log")
+ax2.set_title("Reported damage: nominal vs. real", fontsize=12,
+              fontweight="bold", loc="left")
+ax2.set_ylabel("Damage, $ billion per year (log scale)")
+ax2.set_xlabel("Year")
+ax2.legend(loc="upper left", fontsize=9)
+despine(ax2)
+
+titleblock(fig, "Why every damage figure in this report is inflation-adjusted",
+           "Left: the CPI series used for the adjustment, shown directly rather than "
+           "only through its effect. Right: the same damage series before and after "
+           "adjustment - the nominal series understates old disasters relative to "
+           "recent ones by exactly the ratio on the left.")
+fig.subplots_adjust(top=0.70, wspace=0.28)
+footnote(fig, y=-0.02)
+save(fig, "Fig21.png", "CPI and nominal vs real damage")
+
+# --------------------------------------------------------------- Fig 22 ----
+# C1.7 COMPARE / TREND: displacement, the third face of severity.
+sub2 = df[df.type.isin(TOP6) & (df.year >= 1950)]
+a_ = sub2.pivot_table(index="type", columns="decade", values="affected", aggfunc="sum")
+e_ = sub2.pivot_table(index="type", columns="decade", values="events", aggfunc="sum")
+ape = (a_ / e_).reindex(TOP6)
+
+fig, ax = plt.subplots(figsize=(10.2, 4.8))
+heatmap_log(ax, ape, "People affected per event (log scale)",
+            fmt=lambda v: human(v), cbar_ticks=(2, 3, 4, 5, 6),
+            cbar_labels=("100", "1K", "10K", "100K", "1M"))
+titleblock(fig, "Drought stopped killing but never stopped displacing",
+           "People affected per recorded event, by hazard and decade, 1950s-2020s. "
+           "Drought's deaths per event fell from 29,051 to 53 (Figure 16); its people "
+           "affected per event stayed near 4 million. The 2020s column covers "
+           "2020-2022 only.")
+fig.subplots_adjust(top=0.735, left=0.16)
+footnote(fig, y=-0.03)
+save(fig, "Fig22.png", "affected-per-event heatmap")
+
+print("Task C supplementary complete.")

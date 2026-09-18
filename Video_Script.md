@@ -1,130 +1,191 @@
 # Video demo script — 5:00 maximum
 
+> **The deck is built:** `slides/DAS732_A1_Video_Demo.pptx` — 18 slides, one per
+> beat of this script. Every slide carries its timecode and its lines in the
+> **speaker notes**, so run it in PowerPoint's Presenter View while recording and
+> read off the second screen.
+
 The brief: *"crisp and at most 5 minutes long, where each member explains their
 task, visualization solutions, and inferences. The first minute can be used by the
 team leader or the data processing contributor to mention the preprocessing."*
 
-Budget: **0:00–1:00 preprocessing · 1:00–2:15 Member 1 · 2:15–3:30 Member 2 ·
-3:30–4:45 Member 3 · 4:45–5:00 close.** Rehearse with a timer — going over is a
-straightforward mark loss.
+**Budget:** 0:00–1:00 Lakshya (hook + preprocessing) · 1:00–2:15 Lakshya (Task A) ·
+2:15–3:30 Arnav (Task B) · 3:30–4:45 Kalpit (Task C) · 4:45–5:00 close.
+
+**How to use this.** It's written to be *said*, not read out. Don't memorise it
+word for word — get the numbers right and let the sentences come out however they
+come out. The bold bits are the ones that actually have to land. Where you see
+`[...]` that's a beat, not a word.
 
 ---
 
-## 0:00–0:20 — Hook and question (Member 1)
+## 0:00–0:20 — Hook (Lakshya)
 
-> "Everyone believes natural disasters are getting worse. We took EM-DAT — 123
-> years, 225 countries, 15,015 recorded events — and asked one question:
-> **has the burden actually grown, and are we getting better at surviving it?**
-> The answer turned out to be yes to both, and the two halves don't fit together
-> the way you'd expect."
+*Slide 1 — title.*
 
-*On screen: title slide with the guiding question.*
-
-## 0:20–1:00 — Preprocessing (Member 1)
-
-*On screen: the raw CSV in a text editor, then the cleaned extract.*
-
-> "Four things had to be fixed before any chart. One — the file is
-> semicolon-separated with commas as decimal points, so read naively every number
-> arrives as text. Two — it's a snapshot from April 2023, so 2023 is a part-year;
-> we dropped those 51 rows or every trend would fake a collapse at the end.
-> Three — some hazard type labels carry a trailing space, which silently splits
-> 'Extreme temperature' into two categories. Four — we verified rather than
-> assumed that the adjusted damage column is constant 2022 dollars: it's the
-> nominal figure times 100 over CPI, and CPI is exactly 100 in 2022.
-> Critically, we left missing impact values as missing, never zero — treating
-> 'not reported' as 'nobody died' would have flattered every historical decade."
-
-## 1:00–2:15 — Task Set A: *When?* (Member 1)
-
-*On screen: Fig 4 → Fig 5 → Fig 6 → Fig 7.*
-
-> "**Figure 4.** Events per year. It looks like an explosion after 1970 — and
-> that's where we nearly went wrong. **Figure 5** is the check: 91% of the whole
-> record sits in 43% of the years, and damage reporting covers at most
-> half the records. So the count measures reporting as much as hazard. Everything
-> after this uses rates, not counts.
+> "Hi, we're Lakshya, Arnav and Kalpit.
 >
-> **Figure 6** is the finding. Total deaths peaked in the 1920s at 5.2 million.
-> But look at panel b — deaths *per recorded event* fell from about nineteen
-> nine hundred to a hundred and twenty-nine. A 99.4% fall. Note we used two
-> panels, not a twin axis, because a twin axis lets you pick the crossing point.
+> So everyone kind of assumes natural disasters are getting worse every year. We
+> took EM-DAT — that's a hundred and twenty-three years of disaster records,
+> two hundred and twenty-five countries, about **fifteen thousand events** — and
+> we asked one question. **Has it actually got worse? And are we getting any
+> better at surviving it?**
 >
-> **Figure 7** is us trying to break our own result. Strip each decade's three
-> deadliest records and the decline disappears entirely — the 2000s sit *above*
-> the 1900s. So the century-scale fall in total deaths is mostly the
-> disappearance of mega-catastrophes like the 1931 China flood, not a broad
-> improvement. The per-event improvement is the robust claim."
+> Short answer, yes to both. But the two halves don't fit together the way you'd
+> think."
 
-## 2:15–3:30 — Task Set B: *Where?* (Member 2)
+## 0:20–1:00 — Preprocessing (Lakshya)
 
-*On screen: Fig 8 → Fig 9 → Fig 10 → Fig 11 → Fig 12. **Do the map switch live in
-Tableau** — it is the strongest moment in the demo.*
+*Slides 2–3.*
 
-> "**Figure 8**, where disasters are recorded — all 225 countries appear, fairly
-> evenly shaded. Now watch what happens when I switch the same map to deaths.
-> **[switch]** **Figure 9.** It collapses onto two countries. China and India
-> alone are 68% of all 22.9 million recorded deaths.
+> "Before we could plot anything, four things had to be fixed.
 >
-> **Figure 10** ranks countries on four measures and the leaderboards barely
-> overlap. The United States is first for events *and* first for damage — and
-> 23rd for deaths. Bangladesh is 3rd for deaths and 23rd for damage.
+> One: the file is semicolon-separated and uses commas as decimal points. So if
+> you just open it normally, every number comes in as text.
 >
-> **Figure 11** quantifies it: two countries reach half of all deaths, but it takes
-> twenty to reach half of all *events*.
+> Two: it's a snapshot from April 2023, so 2023 is only a part-year. We dropped
+> those fifty-one rows — otherwise every trend line falls off a cliff right at
+> the end.
 >
-> **Figure 12** is the one that changed how we read the dataset. Take the twenty
-> most disaster-prone countries — so exposure is roughly held constant — and
-> lethality still spans a factor of a thousand. China at 11,139 deaths per event,
-> Australia at 11. That gap isn't hazard. It's vulnerability."
+> Three: some of the hazard labels have a trailing space. So 'Extreme
+> temperature' was quietly being counted as two different categories.
+>
+> And four: we didn't just assume the adjusted damage column was
+> inflation-adjusted, we checked it. It's the raw figure times a hundred over
+> CPI, and CPI is exactly a hundred in 2022.
+>
+> One more thing, and this one actually matters. **Where a value was missing, we
+> left it missing — we never filled it with zero.** If you treat 'not reported'
+> as 'nobody died', every old decade suddenly looks way safer than it was."
 
-## 3:30–4:45 — Task Set C: *What?* (Member 3)
+## 1:00–2:15 — Task Set A: *When?* (Lakshya)
 
-*On screen: Fig 13 → Fig 14 → Fig 15 → Fig 16 → Fig 17.*
+*Slides 4–8.*
 
-> "**Figure 13** is the chart I'd keep if I could keep one. Four bars, same seven
-> hazards, same order. Drought is five percent of events — and fifty-one percent
-> of deaths. Storms are the mirror image: 31% of events, 42% of the money, six
-> percent of the deaths. A hazard's share of disasters tells you almost nothing
-> about its share of harm.
+> **[Slide 5 — Fig 4]** "Okay. Events per year. Looks like an explosion after
+> 1970, right? That's where we nearly went wrong.
 >
-> **Figure 14** places each hazard in a deadliness–cost plane. Drought sits alone
-> on the right. Wildfire is the opposite corner: expensive, but a median of seven
-> deaths.
+> **[Slide 6 — Fig 5]** Because look at this. **Ninety-one percent of the whole
+> record sits in forty-three percent of the years.** And damage reporting never
+> covers more than about half the records in any decade. So this count is
+> measuring how well people wrote things down, as much as it's measuring actual
+> disasters. From here on, we use rates — not counts.
 >
-> **Figure 15** — real damage, inflation-adjusted. The 2010s cost $2.07 trillion,
-> a record. And damage reporting doesn't improve after 1970, so that rise isn't a
-> reporting artefact.
+> **[Slide 7 — Fig 6]** And this is the finding. Top panel is total deaths —
+> peaks in the 1920s, five point two million. But look at the bottom panel.
+> Deaths *per event*. It goes from about **twenty thousand** down to about **a
+> hundred and thirty**. That's a ninety-nine point four percent drop. [...]
+> Quick note — two separate panels, not one chart with two y-axes. With a twin
+> axis you get to pick where the lines cross, and that's not honest.
 >
-> **Figure 16** shows the improvement is uneven. Drought fell from 29,000 deaths
-> per event to 53. Floods and storms collapsed too. Earthquakes — which give no
-> warning — didn't improve at all. And extreme temperature went the *wrong* way:
-> 125 in the 1960s, 1,202 in the 2020s.
+> **[Slide 8 — Fig 7]** Then we tried to break our own result. Take out just the
+> three worst records from each decade — and the decline completely vanishes.
+> The 2000s actually sit *above* the 1900s. So that big fall in total deaths is
+> mostly the giant disasters disappearing, things like the 1931 China flood.
+> It's not that ordinary disasters got safer. **The per-event number is the one
+> that holds up.**
 >
-> **Figure 17** closes it. Since 1970, events, damage and people affected all rise
-> significantly. Annual deaths show no significant trend at all — p is 0.064 — and
-> the rank correlation between deaths and damage is minus 0.01. Costs and
-> mortality have decoupled completely."
+> Arnav, over to you."
 
-## 4:45–5:00 — Close (any member)
+## 2:15–3:30 — Task Set B: *Where?* (Arnav)
 
-> "So: exposure up, vulnerability down, and the bill rising. The world got
-> dramatically better at not dying in disasters — unevenly, not at all for
-> earthquakes, and going backwards for heat. Thank you."
+*Slides 9–12. **Do the map switch live in Tableau** — this is the bit the rubric
+is explicitly looking for.*
+
+> **[Slide 9 — Figs 8 & 9]** "Thanks. So — this is where disasters actually get
+> recorded. And it's basically everywhere. All two hundred and twenty-five
+> countries.
+>
+> Now watch what happens when I switch the exact same map over to deaths.
+> **[SWITCH]** It collapses onto two countries. **China and India together are
+> sixty-eight percent of all twenty-two point nine million deaths.**
+>
+> **[Slide 10 — Fig 10]** Same idea as four separate rankings — and they barely
+> overlap. The US is **number one** for how many disasters it gets, and **number
+> one** for money lost. And **twenty-third** for deaths. Bangladesh is the
+> mirror image: third for deaths, twenty-third for damage. Basically, if a
+> country is rich, disasters cost it money instead of lives.
+>
+> **[Slide 11 — Fig 11]** This just puts a number on it. **Two countries** get
+> you to half of all deaths. It takes **twenty** to get to half of all disasters.
+>
+> **[Slide 12 — Fig 12]** And this is the one that changed how we read the whole
+> dataset. These are the twenty most disaster-hit countries — so they're all
+> heavily exposed, roughly comparable. And the death rate still varies by a
+> factor of a **thousand**. China's at eleven thousand deaths per event.
+> Australia's at eleven.
+>
+> Two honest caveats — there's no population data in this file, and China's
+> number is pulled up by the old famines. But even allowing for both, that gap is
+> far too big to be about the hazards. **That's vulnerability.**
+>
+> Kalpit."
+
+## 3:30–4:45 — Task Set C: *What?* (Kalpit)
+
+*Slides 13–17.*
+
+> **[Slide 13 — Fig 13]** "Thanks. If I could keep one chart from this whole
+> project, it'd be this one. Four bars, same seven hazards, same order every
+> time. [...] **Drought is five percent of events. And fifty-one percent of
+> deaths.** Storms are the exact opposite — thirty-one percent of events,
+> forty-two percent of the money, six percent of the deaths. So what a hazard's
+> share of disasters tells you about its share of harm is basically nothing.
+>
+> **[Slide 14 — Fig 14]** Here's each hazard placed by how deadly and how
+> expensive a typical one is. Drought's out on its own on the right. Wildfire is
+> the opposite corner — expensive, but a typical one kills seven people.
+>
+> **[Slide 15 — Fig 15]** Money over time, all in 2022 dollars. The 2010s cost
+> **two point zero seven trillion** — that's a record. And damage reporting
+> doesn't get better after 1970, so that rise isn't just better record-keeping.
+>
+> **[Slide 16 — Fig 16]** But the improvement isn't even. Drought went from
+> twenty-nine thousand deaths per event down to fifty-three. Floods and storms
+> dropped too — and those are all things you get warning about. Earthquakes,
+> which you don't get warning about, didn't improve at all. **And heatwaves went
+> the wrong way** — a hundred and twenty-five in the sixties, twelve hundred in
+> the 2020s.
+>
+> **[Slide 17 — Fig 17]** Last one. Since 1970: disasters, damage, people
+> affected — all clearly rising. Deaths? No significant trend at all, p is
+> 0.064. And the correlation between deaths and damage is basically zero. **They
+> have completely come apart.**"
+
+## 4:45–5:00 — Close (any one of you)
+
+*Slide 18.*
+
+> "So — more exposure, less vulnerability, and a much bigger bill.
+>
+> We got a lot better at not dying in disasters. Just not everywhere, not at all
+> for earthquakes, and with heat it's actually going backwards.
+>
+> Thanks for watching."
 
 ---
+
+## Delivery notes
+
+- **Say the numbers, don't read them.** "About twenty thousand" beats "nineteen
+  thousand eight hundred and ninety-seven". The exact figures are in the report.
+- **Pause before the punchline.** The two that deserve a beat: *"and fifty-one
+  percent of deaths"* and *"Australia's at eleven."*
+- **Don't read the slide.** The chart already has its title on it. Say the thing
+  the chart *doesn't* say.
+- **Hand over by name** — "Arnav, over to you" / "Kalpit". It makes the three-way
+  split obvious to whoever is marking it.
+- If you fluff a line, stop and retake that slide. Don't try to save it.
 
 ## Production checklist
 
-- [x] Names and roll numbers are already filled in (Lakshya Jain BT2024044,
-      Arnav Jain BT2024233, Kalpit BT2024093)
-- [ ] Each member's signed AI declaration attached separately, on the
+- [x] Names and roll numbers filled in (Lakshya Jain BT2024044, Arnav Jain
+      BT2024233, Kalpit BT2024093)
+- [ ] Each member's signed AI disclosure attached separately, on the
       instructor's form — the brief requires one per member
 - [ ] Tableau workbook published and the URL pasted into `README.md`
 - [ ] Each member records their own segment — the brief requires it
 - [ ] At least one **live Tableau interaction** on camera (the Fig 8 → Fig 9 map
       switch is the natural one); the rubric names "Tableau demo" explicitly
-- [ ] Slides used for the question, the preprocessing summary and the close;
-      Tableau/figures for everything else
-- [ ] Run to time — **5:00 is a hard ceiling**
+- [ ] Run it once with a timer before recording — **5:00 is a hard ceiling**
 - [ ] Export at 1080p, check the audio before uploading

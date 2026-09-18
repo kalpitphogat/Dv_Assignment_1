@@ -121,14 +121,24 @@ function takeaway(slide, text) {
   });
 }
 
-/** A figure slide: finding as the title, chart big, one takeaway line. */
-function figSlide({ n, who, head, sub, take, notes }) {
+/**
+ * A figure slide. No big slide title: every chart already carries its own
+ * headline and subtitle, so repeating them here wasted the space the chart
+ * needs to stay readable on video. Instead a compact task label ties the slide
+ * back to the report's task numbering, and the chart gets the rest.
+ */
+function figSlide({ n, task, who, head, take, notes }) {
   const s = pres.addSlide();
   s.background = { color: SURF };
-  title(s, head, sub);
+  s.addText([
+    { text: task, options: { bold: true, color: INK } },
+    { text: "   " + head, options: { color: INK2 } },
+  ], {
+    x: M, y: 0.22, w: W - 2 * M, h: 0.34, isTextBox: true, margin: 0,
+    valign: "middle", fontFace: B_FONT, fontSize: 13,
+  });
   chip(s, who);
-  figure(s, n, { x: M, y: sub ? 1.32 : 1.08, w: W - 2 * M,
-                 h: (H - 0.78) - (sub ? 1.32 : 1.08) });
+  figure(s, n, { x: 0.34, y: 0.66, w: W - 0.68, h: (H - 0.80) - 0.66 });
   if (take) takeaway(s, take);
   s.addNotes(notes);
   return s;
@@ -175,9 +185,7 @@ function figSlide({ n, who, head, sub, take, notes }) {
     { x: M, y: H - 0.62, w: W - 2 * M, h: 0.32, isTextBox: true, margin: 0,
       fontFace: B_FONT, fontSize: 11, color: "7C93AD" });
   s.addNotes(
-    "0:00-0:10  TITLE. Hold while Lakshya opens.\n\n" +
-    "\"Everyone believes natural disasters are getting worse. We took EM-DAT - " +
-    "123 years, 225 countries, 15,015 recorded events - and asked one question.\"");
+    "0:00-0:20  HOOK  |  Lakshya\n\n\"Hi, we're Lakshya, Arnav and Kalpit.\n\nSo everyone kind of assumes natural disasters are getting worse every year. We took EM-DAT - that's a hundred and twenty-three years of disaster records, two hundred and twenty-five countries, about fifteen thousand events - and we asked one question. Has it actually got worse? And are we getting any better at surviving it?\n\nShort answer, yes to both. But the two halves don't fit together the way you'd think.\"");
 }
 
 // ============================================================ 2. question ===
@@ -227,10 +235,7 @@ function figSlide({ n, who, head, sub, take, notes }) {
   });
   takeaway(s, "Three sub-questions, one per member - so no task is split across the team.");
   s.addNotes(
-    "0:10-0:20  THE QUESTION.\n\n" +
-    "\"Has the burden actually grown, and are we getting better at surviving it? " +
-    "The answer turned out to be yes to both - and the two halves don't fit " +
-    "together the way you'd expect.\"");
+    "0:20  THE QUESTION  |  Lakshya\n\nUse this slide while you finish the hook. The four cards are the four costs - counted, killed, displaced, cost. Point at them, don't read them.");
 }
 
 // ======================================================= 3. preprocessing ===
@@ -273,16 +278,7 @@ function figSlide({ n, who, head, sub, take, notes }) {
       align: "center", fontFace: B_FONT, fontSize: 11, bold: true, color: INK2 });
   takeaway(s, "One cleaning module feeds all 15 charts, so no two figures can disagree.");
   s.addNotes(
-    "0:20-1:00  PREPROCESSING (Lakshya - the brief allows the first minute for this).\n\n" +
-    "\"Four things had to be fixed before any chart. The file is semicolon-separated " +
-    "with comma decimals. It's an April 2023 snapshot, so 2023 is a part-year - we " +
-    "dropped those 51 rows or every trend would fake a collapse at the end. Some " +
-    "hazard labels carry a trailing space, which silently splits 'Extreme " +
-    "temperature' into two categories. And we verified rather than assumed that the " +
-    "adjusted damage column is constant 2022 dollars - nominal times 100 over CPI, " +
-    "and CPI is exactly 100 in 2022.\n\n" +
-    "Critically, we left missing impact values missing, never zero - treating 'not " +
-    "reported' as 'nobody died' would have flattered every historical decade.\"");
+    "0:20-1:00  PREPROCESSING  |  Lakshya  (the brief allows the first minute for this)\n\n\"Before we could plot anything, four things had to be fixed.\n\nOne: the file is semicolon-separated and uses commas as decimal points. So if you just open it normally, every number comes in as text.\n\nTwo: it's a snapshot from April 2023, so 2023 is only a part-year. We dropped those fifty-one rows - otherwise every trend line falls off a cliff right at the end.\n\nThree: some of the hazard labels have a trailing space. So 'Extreme temperature' was quietly being counted as two different categories.\n\nAnd four: we didn't just assume the adjusted damage column was inflation-adjusted, we checked it. It's the raw figure times a hundred over CPI, and CPI is exactly a hundred in 2022.\n\nOne more thing, and this one actually matters. Where a value was missing, we left it missing - we never filled it with zero. If you treat 'not reported' as 'nobody died', every old decade suddenly looks way safer than it was.\"");
 }
 
 // =========================================================== 4. task map ===
@@ -293,57 +289,40 @@ function figSlide({ n, who, head, sub, take, notes }) {
   chip(s, "ALL");
   figure(s, 1, { x: M, y: 1.02, w: W - 2 * M, h: 3.85 });
   s.addNotes(
-    "1:00  HANDOVER.\n\n" +
-    "\"We split it three ways - when, where and what. Each of us owns a " +
-    "sub-question end to end: its tasks, its charts and its inferences.\"");
+    "1:00  THE SPLIT  |  Lakshya\n\n\"We split it three ways - when, where and what. We each own one question the whole way through: our own charts, our own conclusions.\"");
 }
 
 // ======================================================= 5-8. Task Set A ===
 figSlide({
-  n: 4, who: "L",
+  n: 4, task: "A1.2  Trend", who: "L",
   head: "The record explodes after 1970",
   take: "That shape is also exactly what a step-change in data collection looks like.",
   notes:
-    "1:00-1:15  A1.2 TREND.\n\n" +
-    "\"Events per year. It looks like an explosion after 1970 - and this is where " +
-    "we nearly went wrong.\"",
+    "1:00-1:15  TASK A1.2  |  Lakshya\n\n\"Okay. Events per year. Looks like an explosion after 1970, right? That's where we nearly went wrong.\"",
 });
 
 figSlide({
-  n: 5, who: "L",
+  n: 5, task: "A1.3  Identify", who: "L",
   head: "...but it is partly a count of reporting",
   take: "91% of the record sits in 43% of the years. So we use rates, not counts, from here on.",
   notes:
-    "1:15-1:35  A1.3 IDENTIFY - the diagnostic figure.\n\n" +
-    "\"Volume grew 52-fold, which no physical change in hazard could produce on its " +
-    "own. And damage reporting covers at most half the records in any decade. So " +
-    "the count measures reporting as much as it measures hazard. Everything after " +
-    "this uses rates.\"",
+    "1:15-1:35  TASK A1.3  |  Lakshya\n\n\"Because look at this. Ninety-one percent of the whole record sits in forty-three percent of the years. And damage reporting never covers more than about half the records in any decade.\n\nSo this count is measuring how well people wrote things down, as much as it's measuring actual disasters. From here on, we use rates - not counts.\"",
 });
 
 figSlide({
-  n: 6, who: "L",
+  n: 6, task: "A1.4  Compare", who: "L",
   head: "Deaths per recorded event fell 99.4%",
   take: "Two panels, never a twin axis - a twin axis lets the author pick the crossing point.",
   notes:
-    "1:35-1:55  A1.4 COMPARE - the headline finding.\n\n" +
-    "\"Total deaths peaked in the 1920s at 5.2 million. But look at panel b - deaths " +
-    "per recorded event fell from about nineteen nine hundred to a hundred and " +
-    "twenty-nine. An individual recorded disaster today kills roughly one 150th of " +
-    "what one did a century ago.\"",
+    "1:35-1:55  TASK A1.4  |  Lakshya  --  the headline finding\n\n\"And this is the finding. Top panel is total deaths - peaks in the 1920s, five point two million. But look at the bottom panel. Deaths per event. It goes from about twenty thousand down to about a hundred and thirty. That's a ninety-nine point four percent drop.\n\n[beat]\n\nQuick note - two separate panels, not one chart with two y-axes. With a twin axis you get to pick where the lines cross, and that's not honest.\"",
 });
 
 figSlide({
-  n: 7, who: "L",
+  n: 7, task: "A1.5  Validate", who: "L",
   head: "Then we tried to break our own finding",
   take: "Strip each decade's three deadliest records and the decline vanishes entirely.",
   notes:
-    "1:55-2:15  A1.5 VALIDATE - the honest caveat. Do not skip this slide.\n\n" +
-    "\"The 2000s sit above the 1900s once the mega-catastrophes are removed. So the " +
-    "century-scale fall in TOTAL deaths is mostly the disappearance of events like " +
-    "the 1931 China flood, not a broad improvement. The per-event improvement is the " +
-    "claim that survives.\"\n\n" +
-    "Handover to Arnav.",
+    "1:55-2:15  TASK A1.5  |  Lakshya  --  do NOT skip this one\n\n\"Then we tried to break our own result. Take out just the three worst records from each decade - and the decline completely vanishes. The 2000s actually sit above the 1900s.\n\nSo that big fall in total deaths is mostly the giant disasters disappearing, things like the 1931 China flood. It's not that ordinary disasters got safer. The per-event number is the one that holds up.\n\nArnav, over to you.\"",
 });
 
 // ====================================================== 9-12. Task Set B ===
@@ -368,107 +347,72 @@ figSlide({
     align: "center", valign: "middle", fontFace: B_FONT, fontSize: 12,
     bold: true, color: WHITE });
   s.addNotes(
-    "2:15-2:35  B1.1 / B1.2 LOCATE. *** DO THE MAP SWITCH LIVE IN TABLEAU ***\n" +
-    "The rubric names \"Tableau demo\" explicitly - this is the moment to earn it.\n\n" +
-    "\"Here is where disasters are recorded - all 225 countries, fairly evenly " +
-    "shaded. Now watch what happens when I switch the same map to deaths. " +
-    "[SWITCH] It collapses onto two countries. China and India alone are 68% of " +
-    "all 22.9 million recorded deaths.\"");
+    "2:15-2:35  TASKS B1.1 / B1.2  |  Arnav\n*** DO THE MAP SWITCH LIVE IN TABLEAU - the rubric names \"Tableau demo\" explicitly ***\n\n\"Thanks. So - this is where disasters actually get recorded. And it's basically everywhere. All two hundred and twenty-five countries.\n\nNow watch what happens when I switch the exact same map over to deaths. [SWITCH] It collapses onto two countries. China and India together are sixty-eight percent of all twenty-two point nine million deaths.\"");
 }
 
 figSlide({
-  n: 10, who: "A",
+  n: 10, task: "B1.3  Rank", who: "A",
   head: "Four measures, four different leaderboards",
   take: "The US is 1st for events and 1st for damage - and 23rd for deaths.",
   notes:
-    "2:35-2:55  B1.3 RANK.\n\n" +
-    "\"The four leaderboards barely overlap. The United States is first for events " +
-    "and first for damage, and twenty-third for deaths. Bangladesh is third for " +
-    "deaths and twenty-third for damage. Wealth converts disaster exposure into " +
-    "property loss instead of death.\"",
+    "2:35-2:55  TASK B1.3  |  Arnav\n\n\"Same idea as four separate rankings - and they barely overlap. The US is number one for how many disasters it gets, and number one for money lost. And twenty-third for deaths. Bangladesh is the mirror image: third for deaths, twenty-third for damage.\n\nBasically, if a country is rich, disasters cost it money instead of lives.\"",
 });
 
 figSlide({
-  n: 11, who: "A",
+  n: 11, task: "B1.4  Derive", who: "A",
   head: "Two countries hold half of all deaths",
   take: "But it takes twenty countries to reach half of all recorded events.",
   notes:
-    "2:55-3:10  B1.4 DERIVE.\n\n" +
-    "\"Deaths are far more concentrated than disasters. The top five countries hold " +
-    "87% of deaths but only 27% of events. Disasters happen nearly everywhere; " +
-    "dying from them does not.\"",
+    "2:55-3:10  TASK B1.4  |  Arnav\n\n\"This just puts a number on it. Two countries get you to half of all deaths. It takes twenty to get to half of all disasters.\"",
 });
 
 figSlide({
-  n: 12, who: "A",
+  n: 12, task: "B1.5  Derive", who: "A",
   head: "Same exposure, 1,000x the lethality",
   take: "China 11,139 deaths per event; Australia 11. That gap is not hazard - it is vulnerability.",
   notes:
-    "3:10-3:30  B1.5 DERIVE - the slide that changed how we read the data.\n\n" +
-    "\"Take the twenty most disaster-prone countries, so exposure is roughly held " +
-    "constant, and lethality still spans a factor of a thousand. Two honest caveats: " +
-    "there is no population denominator, and China's figure is loaded by the " +
-    "pre-1960 famines. Even so, the spread is far too wide to be hazard.\"\n\n" +
-    "Handover to Kalpit.",
+    "3:10-3:30  TASK B1.5  |  Arnav  --  the slide that changed how we read the data\n\n\"And this is the one that changed how we read the whole dataset. These are the twenty most disaster-hit countries - so they're all heavily exposed, roughly comparable. And the death rate still varies by a factor of a thousand. China's at eleven thousand deaths per event. Australia's at eleven.\n\n[beat]\n\nTwo honest caveats - there's no population data in this file, and China's number is pulled up by the old famines. But even allowing for both, that gap is far too big to be about the hazards. That's vulnerability.\n\nKalpit.\"",
 });
 
 // ===================================================== 13-17. Task Set C ===
 figSlide({
-  n: 13, who: "K",
+  n: 13, task: "C1.1  Compare", who: "K",
   head: "5% of events. 51% of deaths.",
-  sub: "Four bars, the same seven hazards, the same colour order.",
   take: "Drought kills, storms cost, floods displace - they are different hazards.",
   notes:
-    "3:30-3:55  C1.1 COMPARE - the key chart of Task Set C.\n\n" +
-    "\"Drought is five percent of recorded events and fifty-one percent of recorded " +
-    "deaths. Storms are the mirror image: 31% of events, 42% of the money, six " +
-    "percent of the deaths. Earthquakes are the concentrated destroyer - a tenth of " +
-    "events, a quarter of the damage, but only 2.4% of people affected.\"",
+    "3:30-3:55  TASK C1.1  |  Kalpit  --  the key chart of Task Set C\n\n\"Thanks. If I could keep one chart from this whole project, it'd be this one. Four bars, same seven hazards, same order every time.\n\n[beat]\n\nDrought is five percent of events. And fifty-one percent of deaths. Storms are the exact opposite - thirty-one percent of events, forty-two percent of the money, six percent of the deaths. So what a hazard's share of disasters tells you about its share of harm is basically nothing.\"",
 });
 
 figSlide({
-  n: 14, who: "K",
+  n: 14, task: "C1.2  Relate", who: "K",
   head: "Deadly and costly are different hazards",
   take: "Drought: 143 deaths per record. Wildfire: $250M and a median of 7 deaths.",
   notes:
-    "3:55-4:05  C1.2 RELATE.\n\n" +
-    "\"Each hazard sits somewhere in a deadliness-cost plane. Drought is alone on " +
-    "the right. Wildfire is the opposite corner - expensive, but almost harmless to " +
-    "life. There is no single severity axis.\"",
+    "3:55-4:05  TASK C1.2  |  Kalpit\n\n\"Here's each hazard placed by how deadly and how expensive a typical one is. Drought's out on its own on the right. Wildfire is the opposite corner - expensive, but a typical one kills seven people.\"",
 });
 
 figSlide({
-  n: 15, who: "K",
+  n: 15, task: "C1.3  Trend", who: "K",
   head: "$2.07 trillion - the costliest decade yet",
   take: "Damage coverage does not improve after 1970, so this rise is not a reporting artefact.",
   notes:
-    "4:05-4:20  C1.3 TREND.\n\n" +
-    "\"Real damage, inflation-adjusted to 2022 dollars. The 2010s cost 2.07 trillion " +
-    "- a record - and the 2020s are already at 699 billion with only three years " +
-    "counted.\"",
+    "4:05-4:20  TASK C1.3  |  Kalpit\n\n\"Money over time, all in 2022 dollars. The 2010s cost two point zero seven trillion - that's a record. And damage reporting doesn't get better after 1970, so that rise isn't just better record-keeping.\"",
 });
 
 figSlide({
-  n: 16, who: "K",
+  n: 16, task: "C1.4  Compare", who: "K",
   head: "Which hazards became survivable?",
   take: "Drought 29,051 -> 53. Earthquakes never improved. Extreme heat went the wrong way.",
   notes:
-    "4:20-4:35  C1.4 COMPARE.\n\n" +
-    "\"Drought fell from twenty-nine thousand deaths per event to fifty-three. " +
-    "Floods and storms collapsed too - all hazards that give warning. Earthquakes, " +
-    "which give none, did not improve at all. And extreme temperature went the " +
-    "wrong way: 125 in the 1960s, 1,202 in the 2020s.\"",
+    "4:20-4:35  TASK C1.4  |  Kalpit\n\n\"But the improvement isn't even. Drought went from twenty-nine thousand deaths per event down to fifty-three. Floods and storms dropped too - and those are all things you get warning about. Earthquakes, which you don't get warning about, didn't improve at all.\n\nAnd heatwaves went the wrong way. A hundred and twenty-five in the sixties, twelve hundred in the 2020s.\"",
 });
 
 figSlide({
-  n: 17, who: "K",
+  n: 17, task: "C1.5  Correlate", who: "K",
   head: "Costs rose. Deaths did not follow.",
   take: "Rank correlation between annual deaths and annual damage: -0.01.",
   notes:
-    "4:35-4:45  C1.5 CORRELATE.\n\n" +
-    "\"Since 1970, events, damage and people affected all rise significantly. " +
-    "Annual deaths show no significant trend at all - p is 0.064. Costs and " +
-    "mortality have decoupled.\"",
+    "4:35-4:45  TASK C1.5  |  Kalpit\n\n\"Last one. Since 1970: disasters, damage, people affected - all clearly rising. Deaths? No significant trend at all, p is 0.064. And the correlation between deaths and damage is basically zero.\n\nThey have completely come apart.\"",
 });
 
 // ============================================================= 18. close ===
@@ -508,11 +452,7 @@ figSlide({
     x: M, y: H - 0.82, w: W - 2 * M, h: 0.4, isTextBox: true, margin: 0,
     fontFace: H_FONT, fontSize: 17, bold: true, color: WHITE });
   s.addNotes(
-    "4:45-5:00  CLOSE (any member).\n\n" +
-    "\"So: exposure up, vulnerability down, and the bill rising. The world got " +
-    "dramatically better at not dying in disasters - unevenly, not at all for " +
-    "earthquakes, and going backwards for heat. Thank you.\"\n\n" +
-    "HARD STOP at 5:00.");
+    "4:45-5:00  CLOSE  |  any one of you\n\n\"So - more exposure, less vulnerability, and a much bigger bill.\n\nWe got a lot better at not dying in disasters. Just not everywhere, not at all for earthquakes, and with heat it's actually going backwards.\n\nThanks for watching.\"\n\nHARD STOP at 5:00.");
 }
 
 pres.writeFile({ fileName: OUT }).then(() => {

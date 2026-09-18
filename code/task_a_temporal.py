@@ -4,16 +4,16 @@ DAS732 A1 - TASK SET A: "WHEN?"  The temporal record, 1900-2022.
 Guiding sub-question: How has the recorded disaster burden changed over time,
 and how much of that change is real rather than an artefact of record-keeping?
 
-Produces Fig3 - Fig7.
+Produces Fig3 - Fig7, plus supplementary Fig18 - Fig19.
 """
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
 from emdat_common import (load, use_report_style, despine, save, HUMAN,
-                          CAT, GRID, SURFACE, INK_SEC, INK_MUTED,
+                          CAT, GRID, SURFACE, INK, INK_SEC, INK_MUTED,
                           SUBGROUP_ORDER, SUBGROUP_COLOR, rounded_barh,
-                          titleblock, footnote)
+                          heatmap_log, titleblock, footnote)
 
 use_report_style()
 df = load()
@@ -219,3 +219,76 @@ footnote(fig, y=-0.02)
 save(fig, "Fig7.png", "trimmed-deaths robustness check")
 
 print("Task A complete.")
+
+
+# ======================= SUPPLEMENTARY (Task Set A) =========================
+
+TOP6 = ["Flood", "Storm", "Earthquake", "Drought", "Landslide",
+        "Extreme temperature"]
+
+# --------------------------------------------------------------- Fig 18 ----
+# A1.6 COMPARE across type x decade: which hazards grew, and when?
+ev_td = (df[df.type.isin(TOP6)]
+           .pivot_table(index="type", columns="decade", values="events",
+                        aggfunc="sum")
+           .reindex(TOP6).fillna(0))
+
+fig, ax = plt.subplots(figsize=(10.6, 4.9))
+heatmap_log(ax, ev_td, "Events per decade (log scale)")
+titleblock(fig, "Every hazard's record thickens after 1970, but not at the same rate",
+           "Recorded events by hazard type and decade. Floods rise from 6 in the "
+           "1900s to 1,720 in the 2000s; earthquakes - the hardest hazard to miss - "
+           "only from 38 to 289. The 2020s column covers 2020-2022 only.")
+fig.subplots_adjust(top=0.735, left=0.17)
+footnote(fig, y=-0.03)
+save(fig, "Fig18.png", "events by type and decade")
+
+# --------------------------------------------------------------- Fig 19 ----
+# A1.7 VALIDATE with a control: annualised rate before and after 1970, per type.
+# Earthquakes are physically hard to miss even with 1950s record-keeping, so
+# their growth approximates pure reporting improvement. Any hazard that grew
+# faster than earthquakes grew by more than bookkeeping can explain.
+n_pre, n_post = 70, 53                      # years in 1900-1969 and 1970-2022
+rate = pd.DataFrame({
+    "pre": df[df.era == "1900-1969"].groupby("type").events.sum().reindex(TOP6) / n_pre,
+    "post": df[df.era == "1970-2022"].groupby("type").events.sum().reindex(TOP6) / n_post,
+})
+rate["mult"] = rate.post / rate.pre
+rate = rate.sort_values("mult")
+
+fig, ax = plt.subplots(figsize=(9.8, 5.2))
+y = np.arange(len(rate))
+eq_row = list(rate.index).index("Earthquake")
+ax.axhspan(eq_row - 0.45, eq_row + 0.45, color=GRID, alpha=0.5, zorder=1)
+for yi, (_, r) in zip(y, rate.iterrows()):
+    ax.plot([r.pre, r.post], [yi, yi], color=GRID, lw=3, zorder=2,
+            solid_capstyle="round")
+ax.scatter(rate.pre, y, s=110, color=CAT[3], edgecolor=SURFACE, linewidth=1.5,
+           zorder=3, label="1900-1969 (per year)")
+ax.scatter(rate.post, y, s=110, color=CAT[0], edgecolor=SURFACE, linewidth=1.5,
+           zorder=3, label="1970-2022 (per year)")
+for yi, (name, r) in zip(y, rate.iterrows()):
+    ax.text(r.post * 1.12, yi, f"x{r.mult:.1f}", va="center", fontsize=10,
+            fontweight="bold", color=INK if name == "Earthquake" else "#7a2f11")
+ax.set_xscale("log")
+ax.set_xlim(rate.pre.min() * 0.55, rate.post.max() * 2.6)
+ax.set_yticks(y)
+ax.set_yticklabels(rate.index)
+ax.set_xlabel("Recorded events per year (log scale)")
+ax.grid(axis="y", visible=False)
+despine(ax, keep=("bottom",))
+# legend goes bottom-right: the top-left corner holds the longest bar's label
+ax.legend(loc="lower right", fontsize=9.5)
+ax.text(rate.pre.min() * 0.62, eq_row + 0.30,
+        "control hazard: hard to under-report", fontsize=8.5, color=INK_SEC,
+        style="italic", ha="left", va="bottom")
+titleblock(fig, "Earthquakes set the reporting baseline; floods and heatwaves exceed it by far",
+           "Annualised event rate before and after 1970. Earthquakes - physically "
+           "hard to miss even in 1950 - rose 3.8x, which is an estimate of pure "
+           "reporting improvement. Floods rose 26x and extreme temperature 41x: the "
+           "excess over 3.8x is not bookkeeping.")
+fig.subplots_adjust(top=0.79)
+footnote(fig, y=-0.02)
+save(fig, "Fig19.png", "pre/post-1970 rate per type, earthquake control")
+
+print("Task A supplementary complete.")

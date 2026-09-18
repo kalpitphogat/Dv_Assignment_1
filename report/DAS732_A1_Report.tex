@@ -32,6 +32,7 @@
 \usepackage{fancyhdr}
 \usepackage{titlesec}
 \usepackage[hidelinks,breaklinks=true]{hyperref}
+\usepackage{pdfpages}   % appends the signed AI declarations
 
 %----------------------------------------------------------------- colours --
 % Same palette as the figures, so the document reads as one piece of design.
@@ -90,6 +91,7 @@
 % Shorthand used throughout the figure sections.
 \newcommand{\inference}{\textbf{Inference.}\ }
 \newcommand{\rationale}{\textbf{Rationale.}\ }
+\newcommand{\howto}{\textbf{How to read it.}\ }
 \newcommand{\taskhead}[2]{\subsection*{Task #1 --- #2}%
   \addcontentsline{toc}{subsection}{Task #1 --- #2}}
 
@@ -166,10 +168,11 @@ Visual Exploration of the EM-DAT Emergency\\Events Database, 1900--2022\par}
 \end{tabularx}}
 
 \vspace{0.85cm}
-\callout{\small\textbf{Note on AI use.} Each team member submits a signed AI
-declaration separately, on the form circulated by the course instructor. The
-verification harness described in Section~\ref{sec:repro} documents how every
-number in this report was independently re-derived from the raw data.}
+\callout{\small\textbf{Note on AI use.} A signed AI declaration for each team
+member is included at the end of this report (Section~\ref{sec:ai}), on the form
+circulated by the course instructor. The verification harness described in
+Section~\ref{sec:repro} documents how every number in this report was
+independently re-derived from the raw data.}
 \end{titlepage}
 
 %------------------------------------------------------------------ front --
@@ -327,6 +330,14 @@ member's contribution is separable and equal, as the assignment brief requires.}
 \label{fig:taskmap}
 \end{figure}
 
+\howto The box at the top is the single guiding question. The three columns
+below it are the three task sets; each is headed by a coloured band naming the
+member who owns it and the figures they produced, and lists that member's five
+tasks with the Schulz et al.\ verb each one implements. The arrows run downward
+only: the question splits into three independent strands, and the three strands
+converge on the single data story at the foot of the diagram. Nothing crosses
+sideways between columns, which is the point --- no task is shared.
+
 %=======================================================================
 \section{Dataset Description}
 %=======================================================================
@@ -426,6 +437,16 @@ differently-cleaned dataset.}
 \label{fig:pipeline}
 \end{figure}
 
+\howto Read left to right; every box is a file in the submission and every
+arrow is data moving. The grey box on the left is the raw download, exactly as
+Kaggle supplies it. The large blue box is the one cleaning module, with its eight
+numbered rules listed in the order they are applied. It emits two things: the
+in-memory analysis frame used by the charts, and the flat CSV used by Tableau ---
+the small grey arrow between them marks that both come from identical rules. The
+four boxes on the right are the scripts that consume the frame; the three upper
+ones are labelled with the figures they generate, and the fourth is the
+verification harness.
+
 \begin{table}[H]
 \centering
 \caption{Preprocessing rules applied in \texttt{emdat\_common.py}, their effect
@@ -503,8 +524,15 @@ to read the first chart can read all fifteen.
 \item \textbf{Log scales are labelled as such} and are used only where the data
   span three or more orders of magnitude.
 \item \textbf{Every chart states its own finding in its title.} The chart title
-  is the inference; the chart subtitle carries the caveat. The \LaTeX{} caption
-  below each figure gives the rationale for the chart form.
+  is the inference; the chart subtitle carries the caveat.
+\item \textbf{Every figure is explained in the same three steps}, so a reader can
+  understand any figure without having read the ones before it. The
+  \emph{caption} says what the figure is and why that chart form was chosen;
+  \textbf{How to read it} decodes the picture itself --- what is on each axis,
+  what the marks, colours and sizes encode, whether a scale is logarithmic, and
+  what the annotations mark; and \textbf{Inference} states what the figure
+  demonstrates. Where a figure needed justifying before it could be believed, a
+  \textbf{Rationale} paragraph precedes the inference.
 \item \textbf{Part-decade warning.} The 2020s bucket holds only 2020--2022 and is
   annotated wherever it appears.
 \end{itemize}
@@ -532,6 +560,13 @@ outburst, fog, animal accident --- 50 events combined) are folded into
 \label{fig:types}
 \end{figure}
 
+\howto One horizontal bar per hazard type. Bar length is the total number of
+events recorded for that hazard across 1900--2022, and the number and percentage
+at the end of each bar give the exact value, so nothing has to be estimated off
+the axis. Bars are sorted longest-first. The bottom bar, ``Other'', aggregates
+the four rarest types (mass movement, glacial lake outburst, fog and animal
+accident) because individually each is too small to see.
+
 \inference The record is dominated by water and weather. Floods (5{,}764 events,
 38.4\%) and storms (4{,}591, 30.6\%) together account for \textbf{69\% of all
 recorded events}. Earthquakes are a distant third at 10.5\%. Drought --- which
@@ -553,6 +588,14 @@ the legend, so identity never depends on colour alone.}
 \label{fig:trend}
 \end{figure}
 
+\howto The horizontal axis is the calendar year and the vertical axis is the
+number of events recorded in that year. The coloured bands are stacked, so the
+height of a band is that sub-group's contribution and the height of the whole
+stack is the total for that year. Colour identifies the sub-group: the legend
+gives all five, and the two largest bands are also labelled directly on the
+chart. The dashed vertical line marks 1970, the point after which EM-DAT's
+coverage becomes systematic.
+
 \inference The curve is close to flat until roughly 1960 and then rises steeply,
 peaking at 440 events in 2005. The growth is overwhelmingly hydrological and
 meteorological --- floods and storms --- which is consistent with a
@@ -573,6 +616,15 @@ rather than one chart, because volume and completeness are different measures;
 putting them on a shared $y$-axis would be meaningless.}
 \label{fig:reporting}
 \end{figure}
+
+\howto Two separate panels, because they measure different things. In panel
+(a) the horizontal axis is the decade and the bar height is the number of events
+recorded in it --- this is \emph{volume}. In panel (b) the horizontal axis is the
+same decade, but the vertical axis is a percentage fixed from 0 to 100: the blue
+circles are the share of that decade's records that carry a death toll, and the
+orange squares the share that carry an economic-damage figure. Panel (b) is
+therefore about \emph{completeness}, not about disasters. Read panel (a) as the
+claim and panel (b) as the audit of it.
 
 \rationale This is the diagnostic figure of the report. Before drawing any
 conclusion from a rising count, we ask whether the instrument changed.
@@ -601,6 +653,15 @@ than on a twin $y$-axis.}
 \label{fig:deaths}
 \end{figure}
 
+\howto Both panels share the same horizontal axis, the decade. Panel (a) is a
+bar chart of total recorded deaths in millions, on an ordinary linear scale, with
+the taller bars labelled. Panel (b) divides those same deaths by the number of
+recorded events, and its vertical axis is \emph{logarithmic}: each labelled
+gridline is ten times the one below it, so a straight fall down this axis is a
+repeated tenfold reduction, not a fixed one. The two end values are labelled. The
+figure is read by comparing the direction of the two panels, which is the whole
+point --- (a) falls gently, (b) collapses.
+
 \inference The two panels point in opposite directions, and that contradiction is
 the centre of the data story. Total deaths peaked in the \textbf{1920s at 5.24
 million} and have fallen to 0.45 million in the 2010s. Deaths per recorded event
@@ -624,6 +685,15 @@ axis is logarithmic, whereas dot \emph{position} still is. This figure is a
 deliberate attempt to break the result of Figure~\ref{fig:deaths}.}
 \label{fig:trimmed}
 \end{figure}
+
+\howto Each decade has two dots. The blue dot is that decade's total recorded
+deaths; the orange dot is the same total after the three single deadliest records
+of that decade are removed. The grey bar joining them is therefore not a bar in
+the usual sense --- its length \emph{is} the amount contributed by just those
+three records. The vertical axis is logarithmic, so equal vertical distances are
+equal ratios. Read the chart by ignoring the dots for a moment and looking only
+at the connectors: they are long on the left and short on the right, which says
+the early decades were dominated by a handful of enormous events.
 
 \rationale A 99.4\% fall is a large claim. Because EM-DAT's early decades are
 dominated by a handful of enormous famines and floods, we test whether the
@@ -661,6 +731,14 @@ country except the United States and China identically pale.}
 \label{fig:mapevents}
 \end{figure}
 
+\howto Every country is filled according to one number: the total count of
+disaster events recorded there across 1900--2022. A single blue hue is used, pale
+for few and dark for many, so the eye reads only intensity and never has to
+decode separate colours. The scale bar beneath the map is \emph{logarithmic} ---
+each labelled step (1, 10, 100, 1{,}000) is ten times the previous one, so a
+country twice as dark has far more than twice as many events. Grey means no
+recorded event at all.
+
 \inference Disaster occurrence is close to universal: all \textbf{225} countries
 and territories in the file appear at least once. The darkest countries are the
 large, populous, well-documented ones --- the United States (1{,}119 events),
@@ -680,6 +758,12 @@ read directly against each other. Holding the encoding constant is what makes
 the comparison legible.}
 \label{fig:mapdeaths}
 \end{figure}
+
+\howto Identical in construction to Figure~\ref{fig:mapevents} --- same
+projection, same single-hue blue ramp, same logarithmic scale --- but the number
+driving the fill is now total recorded deaths rather than event count. Holding
+everything except the measure constant is deliberate: any difference you see
+between the two maps is a difference in the data, not in how it was drawn.
 
 \inference The map changes character completely. Where
 Figure~\ref{fig:mapevents} is broadly shaded, Figure~\ref{fig:mapdeaths} is
@@ -701,6 +785,14 @@ measures. Every bar is directly labelled with its value, so no reading off an
 axis is required.}
 \label{fig:leaderboards}
 \end{figure}
+
+\howto Four separate rankings, one per panel. Within a panel, the twelve
+longest bars are the twelve highest-ranking countries on that measure, longest at
+the top, and every bar carries its own value label. Each panel has its own
+horizontal scale and no axis is drawn, so bar lengths should be compared
+\emph{within} a panel and never across panels --- the comparison this figure
+invites is of the \emph{membership and order} of the four lists, not of their
+magnitudes.
 
 \inference The four leaderboards barely overlap, and the mismatches are the
 finding:
@@ -732,6 +824,15 @@ curve rises, the fewer countries carry that burden.}
 \label{fig:concentration}
 \end{figure}
 
+\howto Countries are ranked worst-first for each measure, then accumulated.
+A point at $(x, y)$ reads: ``the $x$ worst-affected countries together account
+for $y$ per cent of the world total.'' Every curve therefore starts low, rises,
+and must end at 100\% once all 225 countries are included. The steeper a curve
+rises at the left, the more concentrated that burden is in a few countries. The
+horizontal axis is logarithmic so the first handful of countries is legible. The
+dashed line marks the 50\% level, and the two dots on the deaths curve mark China
+alone and China plus India.
+
 \inference The burdens are concentrated to very different degrees. It takes just
 \textbf{2 countries} to pass half of all recorded deaths (China alone is 48\%),
 but \textbf{20 countries} to pass half of all recorded \emph{events}. The top
@@ -750,6 +851,14 @@ to the most disaster-prone countries holds exposure roughly constant, so that th
 remaining variation reflects vulnerability rather than hazard frequency.}
 \label{fig:lethality}
 \end{figure}
+
+\howto Only the 20 countries with the most recorded events appear, which is
+what makes the comparison fair: every country shown is heavily disaster-exposed,
+so exposure is roughly held constant and the differences are differences in
+outcome. Bar length is deaths divided by recorded events --- an average severity,
+not a total --- and countries are sorted from the highest to the lowest. Every
+bar is labelled, and the axis is linear, so length is directly proportional to
+value.
 
 \inference Among countries with broadly comparable exposure, lethality varies by
 a factor of about \textbf{1{,}000} --- from China at 11{,}139 deaths per event
@@ -782,6 +891,15 @@ categories in the same colour order so the eye can track a single hazard down th
 chart.}
 \label{fig:signature}
 \end{figure}
+
+\howto Four bars, one per burden, each stretched to the full width so that
+each represents 100\% of that burden. The width of a coloured segment is the
+share of that burden attributable to one hazard, and segments of 6\% or more
+carry their percentage. The crucial detail is that all four bars use the same
+seven hazards in the same left-to-right colour order --- so a single hazard can
+be tracked straight down the chart, and a hazard whose segment changes width
+between bars is one whose share of events differs from its share of harm.
+Table~\ref{tab:shares} gives the exact numbers.
 
 \inference This is the key chart of Task Set C, and it shows that a hazard's
 share of \emph{events} predicts almost nothing about its share of \emph{harm}
@@ -824,6 +942,15 @@ bubble identity is carried by direct labels, not by colour.}
 \label{fig:scatter}
 \end{figure}
 
+\howto Each bubble is one hazard type, positioned by two medians: how deadly
+a typical record of that hazard is (horizontal) and how expensive a typical
+record is (vertical). Both axes are logarithmic, so a bubble twice as far right
+is far more than twice as deadly. Bubble area is proportional to how many events
+of that hazard were recorded, so a large bubble is a common hazard. The faint
+grey crosshair sits at the median of each axis and divides the plane into the
+four labelled quadrants. Medians rather than totals are used so that one
+catastrophe cannot drag a hazard across the plot.
+
 \inference Drought sits alone on the right: a typical drought record carries
 \textbf{143 deaths}, more than three times the next hazard. The costliest
 \emph{typical} hazard is a different one --- extreme temperature, at a median
@@ -843,6 +970,13 @@ is essential over a 123-year window; the sub-group breakdown shows which hazards
 drive the growth.}
 \label{fig:damage}
 \end{figure}
+
+\howto The horizontal axis is the decade and the vertical axis is reported
+economic damage in billions of US dollars, all converted to constant 2022 prices
+so that decades are comparable. Segments are stacked by sub-group, so the height
+of a segment is that sub-group's damage and the height of the whole bar is the
+decade total, labelled above the taller bars. Note that the 2020s bar covers only
+three years and is annotated as such.
 
 \inference Real damage rises relentlessly: \textbf{\$1{,}354 billion in the
 1990s, \$1{,}329 billion in the 2000s, and \$2{,}074 billion in the 2010s} ---
@@ -865,6 +999,15 @@ the reader never has to estimate a number from colour, and the sequential blue
 ramp is logarithmic. The 2020s column covers 2020--2022 only.}
 \label{fig:heatmap}
 \end{figure}
+
+\howto A grid, not a chart with axes: each row is a hazard, each column a
+decade, and each cell holds one number --- deaths per recorded event for that
+hazard in that decade. The number is printed in every cell, so colour is a
+reading aid rather than the data itself; the blue ramp runs pale for low to dark
+for high on a logarithmic scale. A dash means that hazard has no recorded events
+in that decade. Read \emph{along a row} to see whether a hazard became more or
+less survivable over time, and \emph{down a column} to compare hazards within one
+decade.
 
 \inference The improvement is real but uneven, and one hazard moves the wrong
 way:
@@ -896,6 +1039,15 @@ what allows four different units to share a single axis honestly, instead of
 resorting to a dual axis.}
 \label{fig:decoupling}
 \end{figure}
+
+\howto The four measures have four different units, so none is plotted
+directly. Instead each series is divided by its own 1970s average and multiplied
+by 100 --- so every line starts near 100, and a value of 200 means ``twice the
+1970s level \emph{for that measure}''. This is what lets four incompatible units
+share one honest axis instead of a dual axis. The vertical axis is logarithmic so
+proportional changes are comparable, each line is a five-year moving average to
+suppress single-year spikes, and the dashed line marks the 1970s baseline of 100.
+Lines that rise together have moved together; lines that separate have decoupled.
 
 \inference Over 1970--2022 the four measures separate cleanly. Fitting a
 log-linear trend to each annual series gives Table~\ref{tab:trends}. Events,
@@ -1087,6 +1239,148 @@ rebuild. \texttt{Tableau\_Guide.md} gives step-by-step instructions for
 rebuilding six demonstrable views in Tableau from the cleaned extract, for the
 video demo.
 
+
+%=======================================================================
+\section{Supplementary Figures}
+\label{sec:supp}
+%=======================================================================
+
+The fifteen figures of Sections~\ref{sec:taskA}--\ref{sec:taskC} answer the
+guiding question on their own. The five below were produced afterwards to
+pressure-test three specific claims that the main sequence asserts but does not
+fully establish, and are reported here rather than in the main sequence so that
+the data story stays the length the brief asks for. Each remains owned by the
+member who owns the task set it extends.
+
+\subsection*{Extending Task Set A --- separating hazard from record-keeping}
+\addcontentsline{toc}{subsection}{Extending Task Set A}
+
+Figure~\ref{fig:reporting} concluded that the event count is ``a joint
+measurement of hazard and of reporting effort, and cannot be separated into the
+two''. Figures~\ref{fig:typedecade} and \ref{fig:control} go further and
+partially separate them.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\figw]{Fig18}
+\caption[Recorded events by hazard and decade]{\textbf{Recorded events by hazard
+type and decade.} The counts underlying the rates in
+Figure~\ref{fig:control}; a heatmap is used so that thirteen decades and six
+hazards fit in one view without thirteen separate bars per hazard.}
+\label{fig:typedecade}
+\end{figure}
+
+\howto Each row is a hazard, each column a decade, and each cell is the number
+of events recorded for that pair. The number is printed in every cell, so the
+blue ramp (logarithmic, pale to dark) only ranks them at a glance. Read along a
+row to see when that hazard's record thickened.
+
+\inference Every hazard's record grows after 1970, but not by the same factor.
+Floods rise from 6 events in the 1900s to 1,720 in the 2000s. Earthquakes ---
+the hazard hardest to overlook --- rise only from 38 to 289. That difference is
+the opening the next figure exploits.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\figw]{Fig19}
+\caption[Pre- and post-1970 event rate with an earthquake control]{\textbf{Annualised
+event rate before and after 1970, with earthquakes as a control hazard.} A
+paired dot plot on a log axis: position encodes the rate, and the connector
+length is the change. Earthquakes are used as a natural control because a
+destructive earthquake is physically hard to miss even with 1950s
+record-keeping, so its growth approximates \emph{pure} reporting improvement.}
+\label{fig:control}
+\end{figure}
+
+\howto Two dots per hazard: the gold dot is the average number of events
+recorded per year in 1900--1969, the blue dot the same for 1970--2022. Rates are
+used rather than totals because the two eras are 70 and 53 years long. The
+multiplier at the right of each row is blue-over-gold. The shaded row is the
+control.
+
+\inference Earthquakes rose $\times$3.8. If that is what better record-keeping
+alone buys, then the excess above it is not bookkeeping: floods rose
+$\times$26.2, extreme temperature $\times$41.3, landslides $\times$15.4, storms
+and droughts $\times$11.1. This does not make the raw counts trustworthy in
+absolute terms --- the control is an approximation, and earthquakes may
+themselves be under-recorded early --- but it does show the post-1970 rise is
+\emph{not} wholly an artefact, which Figure~\ref{fig:reporting} alone could not
+establish.
+
+\subsection*{Extending Task Set B --- testing the wealth reading directly}
+\addcontentsline{toc}{subsection}{Extending Task Set B}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\figw]{Fig20}
+\caption[Country lethality against cost per event]{\textbf{Deaths per event
+against damage per event, for the 20 most-exposed countries.} The same country
+set as Figure~\ref{fig:lethality}, with the money axis added. Both axes are
+logarithmic and bubble area is the number of recorded events.}
+\label{fig:lethvscost}
+\end{figure}
+
+\howto Horizontal position is how many people a typical disaster kills in that
+country; vertical position is what a typical disaster costs there. A country in
+the lower right suffers deadly, cheap disasters; upper left, costly but
+survivable ones. If wealth simply reduced all harm, the countries would lie along
+a falling diagonal.
+
+\inference They do not. The rank correlation between the two axes is
+$\rho = 0.16$ ($p = 0.51$) --- no relationship at all. The United States and
+Japan sit top-left, losing on the order of \$2 billion per event and few lives;
+Bangladesh sits far right and low, losing 7{,}923 lives and \$137 million per
+event. Section~\ref{sec:taskB} inferred that wealth converts exposure into
+property loss from the \emph{rank mismatch} between four leaderboards; this
+tests the same claim directly on two continuous measures and finds it holds.
+
+\subsection*{Extending Task Set C --- the adjustment, and the third burden}
+\addcontentsline{toc}{subsection}{Extending Task Set C}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\figw]{Fig21}
+\caption[The CPI adjustment, shown directly]{\textbf{The inflation adjustment,
+shown rather than asserted.} Section~\ref{sec:prep} states the adjustment as a
+formula; this is what it does. It is also the only figure in the report that
+uses the \texttt{CPI} column directly.}
+\label{fig:cpi}
+\end{figure}
+
+\howto Left: the CPI index itself, 2.85 in 1900 rising to 100 in 2022 by
+definition. Right: total reported damage per year drawn twice --- once as
+originally reported (gold) and once in constant 2022 dollars (blue) --- on a log
+axis. The vertical gap between the two lines at any year is exactly the CPI
+ratio for that year.
+
+\inference The gap is enormous early and closes to nothing by 2022, which is
+why the nominal total (\$4.19 trillion) and the real total (\$6.70 trillion)
+differ so much. Any damage trend drawn on nominal figures would be measuring
+American inflation as much as disaster cost.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\figw]{Fig22}
+\caption[People affected per event, by hazard and decade]{\textbf{People
+affected per recorded event, by hazard and decade.} Deliberately the same form,
+hazards and decades as Figure~\ref{fig:heatmap}, with deaths swapped for people
+affected, so the two can be read directly against each other.}
+\label{fig:affected}
+\end{figure}
+
+\howto Identical construction to Figure~\ref{fig:heatmap}: rows are hazards,
+columns decades, each cell prints its value, colour is a logarithmic blue ramp.
+Only the measure has changed. Compare a cell here with the same cell there.
+
+\inference This is the most important qualification in the report.
+Figure~\ref{fig:heatmap} showed drought's deaths per event collapsing from
+29{,}051 in the 1960s to 53 in the 2020s --- the single strongest piece of
+evidence for the claim that vulnerability fell. But drought's \emph{people
+affected} per event never fell: it sits near 4 million across every decade from
+the 1970s on. Drought stopped killing people and carried on displacing them at
+the same rate. The report's headline should therefore be read narrowly: what
+fell is \emph{mortality} per event, not harm per event.
+
 %=======================================================================
 \section{Author Contributions}
 \label{sec:contrib}
@@ -1131,6 +1425,22 @@ The guiding question and the three-way task decomposition
 (Figure~\ref{fig:taskmap}); the visual design conventions of Section 3;
 Sections 1, 7 and 10; the \LaTeX{} report template; the video storyboard; final
 review.
+
+
+%=======================================================================
+\section{AI Declaration Forms}
+\label{sec:ai}
+%=======================================================================
+
+One signed declaration per team member follows, on the form circulated by the
+course instructor, as required by the assignment brief.
+
+\includepdf[pages=-,fitpaper=false,width=\textwidth,
+            pagecommand={\thispagestyle{fancy}}]{../ai_disclosures/AI_Declaration_Lakshya_Jain_BT2024044.pdf}
+\includepdf[pages=-,fitpaper=false,width=\textwidth,
+            pagecommand={\thispagestyle{fancy}}]{../ai_disclosures/AI_Declaration_Arnav_Jain_BT2024233.pdf}
+\includepdf[pages=-,fitpaper=false,width=\textwidth,
+            pagecommand={\thispagestyle{fancy}}]{../ai_disclosures/AI_Declaration_Kalpit_BT2024093.pdf}
 
 %=======================================================================
 \begin{thebibliography}{9}
