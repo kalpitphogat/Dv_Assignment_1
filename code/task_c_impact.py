@@ -4,7 +4,7 @@ DAS732 A1 - TASK SET C: "WHAT?"  The impact signature of each hazard, 1900-2022.
 Guiding sub-question: Which hazards kill, which displace, and which cost money -
 and are they the same hazards?
 
-Produces Fig13 - Fig17.
+Produces Fig13 - Fig17 and Fig20.
 """
 import numpy as np
 import pandas as pd
@@ -242,5 +242,41 @@ titleblock(fig, "Costs rose, deaths did not follow",
 fig.subplots_adjust(top=0.79, right=0.82)
 footnote(fig, y=-0.02)
 save(fig, "Fig17.png", "indexed decoupling")
+
+# ---------------------------------------------------------------- Fig 20 ----
+# C1.6 EXPLAIN: what does the CPI adjustment actually do to the damage figure?
+yr = (df.groupby("year")
+        .agg(cpi=("cpi", "mean"), nominal=("damage_nominal", "sum"),
+             real=("damage_real", "sum"))
+        .dropna())
+
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11.2, 4.6))
+
+ax1.plot(yr.index, yr.cpi, color=CAT[0], lw=2.2)
+ax1.set_title("US CPI, 1900-2022", fontsize=12, fontweight="bold", loc="left")
+ax1.set_ylabel("CPI index (2022 = 100)")
+ax1.set_xlabel("Year")
+despine(ax1)
+
+ax2.plot(yr.index, yr.nominal / 1e9, color=CAT[3], lw=2, label="Nominal (as reported)")
+ax2.plot(yr.index, yr.real / 1e9, color=CAT[0], lw=2.2, label="Real (2022 USD)")
+ax2.set_yscale("log")
+ax2.set_title("Reported damage: nominal vs. real", fontsize=12, fontweight="bold", loc="left")
+ax2.set_ylabel("Damage, $ billion per year (log scale)")
+ax2.set_xlabel("Year")
+ax2.legend(loc="upper left", fontsize=9)
+despine(ax2)
+
+fig.suptitle("Why every damage figure in this report is inflation-adjusted",
+             fontsize=15, fontweight="bold", x=0.02, y=0.99, ha="left")
+fig.text(0.02, 0.88,
+          "Left: the CPI series used for adjustment, shown directly rather than only\n"
+          "through its effect. Right: the same raw damage series before and after\n"
+          "adjustment - the nominal series understates old disasters relative to\n"
+          "recent ones by exactly the ratio on the left.",
+          fontsize=10.5, color=INK_SEC, va="top")
+fig.subplots_adjust(top=0.68, wspace=0.28)
+footnote(fig, y=-0.02)
+save(fig, "Fig20.png", "CPI and nominal vs real damage")
 
 print("Task C complete.")

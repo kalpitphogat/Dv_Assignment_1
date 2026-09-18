@@ -248,6 +248,29 @@ chk("median damage 2000s", f"\\${ann.loc[2003:2022, 'damage'].median() / 1e9:.0f
 chk("median deaths 1970s", f"{ann.loc[1970:1989, 'deaths'].median():,.0f} to")
 chk("median deaths 2000s", f"to {ann.loc[2003:2022, 'deaths'].median():,.0f}")
 
+# --- supplementary views (Fig18-20) ------------------------------------------
+flood = df[df.type == "Flood"]
+fsub = flood.groupby("subtype").events.sum()
+fshare = fsub / fsub.sum() * 100
+chk("flood total events (Fig18)", f"{int(fsub.sum()):,} recorded flood events")
+chk("riverine share", f"{fshare['Riverine flood']:.1f}\\%")
+chk("unspecified flood share", f"{fshare['Flood (unspecified)']:.1f}\\%")
+chk("flash flood share", f"{fshare['Flash flood']:.1f}\\%")
+chk("coastal flood share", f"{fshare['Coastal flood']:.1f}\\%")
+
+div = df.groupby("country").type.nunique()
+ev = df.groupby("country").events.sum()
+chk("India diversity", f"India ({ev['India']:,} events) and Peru ({ev['Peru']:,} events)")
+chk("India/Peru type count", f"{div['India']} distinct hazard types each")
+chk("India events rank", f"India ranks\nonly {int(ev.rank(ascending=False, method='min')['India'])}rd by volume")
+chk("Peru events rank", f"Peru {int(ev.rank(ascending=False, method='min')['Peru'])}th")
+chk("US diversity", f"at {div['United States of America (the)']} and {div['China']} types")
+
+cpi_y = df.groupby("year").cpi.mean()
+chk_round("CPI 1900-2022 ratio", cpi_y[2022] / cpi_y[1900], 0, "35-fold", 35)
+chk("CPI 1900 index", f"index {cpi_y[1900]:.1f}, base")
+
+
 # ------------------------------------------------------------------- run ----
 def normalise(t: str) -> str:
     t = t.replace("{,}", ",")          # LaTeX thin-space thousands separator
@@ -264,7 +287,7 @@ def structural_checks(tex: str) -> list[tuple[str, str]]:
     """
     problems: list[tuple[str, str]] = []
     inc = re.findall(r"\\includegraphics\[[^\]]*\]\{(Fig\d+)\}", tex)
-    want = [f"Fig{i}" for i in range(1, 18)]
+    want = [f"Fig{i}" for i in range(1, 21)]
     if inc != want:
         problems.append(("figure include order",
                          f"document order {inc} != {want}"))

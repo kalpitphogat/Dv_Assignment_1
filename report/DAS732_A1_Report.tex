@@ -928,6 +928,103 @@ Deaths \emph{per event}& $\times 0.58$ & $< 0.001$ & 0.38\\
 \end{table}
 
 %=======================================================================
+\section{Supplementary Views: One Drill-Down per Task Set}
+\label{sec:supp}
+%=======================================================================
+
+Each task set above closes on a finding that invites one further question.
+This section answers those three questions with one additional figure each,
+in the same design conventions as Section~3. They are placed together here,
+after the three task sets, so that the figure numbering of
+Figures~\ref{fig:types}--\ref{fig:decoupling} --- and every cross-reference
+to them in the text --- stays exactly as it was.
+
+\taskhead{A1.6}{Task Set A drill-down: which flood is actually rising?}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\figw]{Fig18}
+\caption[Flood events by subtype]{\textbf{Flood events per year, split by
+subtype (5-year moving average).} Figure~\ref{fig:trend} showed that floods
+drive most of the post-1970 rise; a stacked area chart is used again here,
+now one level down, because the question is which flood \emph{mechanism}
+grows fastest inside that already-growing total, and stacking keeps the
+composition and the total legible in one image.}
+\label{fig:floodsubtype}
+\end{figure}
+
+\inference What is happening in this chart: the blue band (riverine flooding)
+is thin and flat until about 1970, then grows faster than every other band and
+becomes the largest single contributor to the whole stack by the 1990s. Of the
+5{,}764 recorded flood events, riverine flooding accounts for
+\textbf{46.1\%}, unspecified floods for 38.3\%, flash floods for 14.2\%, and
+coastal floods for only 1.5\%. The practical reading is that the flood trend in
+Figure~\ref{fig:trend} is not a generic rise in ``flooding'' --- it is
+overwhelmingly a rise in \textbf{river-basin flooding}, the subtype most
+directly linked to upstream land-use change, floodplain urbanisation, and
+extreme rainfall, which points mitigation spending toward watershed and
+river-basin management specifically rather than flood defence in general.
+
+\taskhead{B1.6}{Task Set B drill-down: is exposure narrow or broad?}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\figw]{Fig19}
+\caption[Event volume against hazard diversity]{\textbf{Total recorded events
+(log $x$-axis) against the number of distinct hazard types ever recorded, for
+the 20 most-exposed countries, coloured by each country's single most frequent
+hazard.} A scatter plot is used, not a ranked bar chart, because the question
+is the joint distribution of two independent measures --- volume and
+diversity --- and a bar chart can only rank one measure at a time.}
+\label{fig:diversity}
+\end{figure}
+
+\inference What is happening in this chart: the points do not fall on a rising
+diagonal, which is the finding itself --- volume and diversity are not the same
+axis. \textbf{India (688 events) and Peru (195 events) sit highest on the
+diversity axis with 10 distinct hazard types each}, even though India ranks
+only 3rd by volume and Peru 16th. The two highest-volume countries, the United
+States (1{,}119 events) and China (984), sit lower, at 8 and 9 types
+respectively. India and Peru owe their diversity to spanning several climate
+and geological zones at once (Himalayan, coastal and arid for India; coastal,
+Andean and Amazonian for Peru), whereas the United States and China's totals
+are driven by fewer, very frequently repeated hazards (storms and floods).
+The practical implication is that a single national risk score conflates two
+different planning problems: a high-volume, low-diversity country needs deep
+capacity against one or two hazard types, while a high-diversity country needs
+broad capacity across many.
+
+\taskhead{C1.6}{Task Set C drill-down: what does the CPI adjustment actually do?}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\figw]{Fig20}
+\caption[CPI and nominal vs.\ real damage]{\textbf{Left: the US CPI series
+used throughout this report for inflation adjustment, shown directly. Right:
+the same raw annual damage total before (nominal) and after (real, 2022 USD)
+adjustment.} Every other damage figure in this report uses only the adjusted
+series; this is the one figure that shows the adjustment mechanism itself,
+because a reader should be able to see what the correction does, not just
+trust that it was applied.}
+\label{fig:cpi}
+\end{figure}
+
+\inference What is happening in this chart: the left panel is a smooth,
+monotonically rising curve, which is expected of a price index; the right
+panel's two lines diverge visibly as the years get older, with the real
+(blue) line running consistently above the nominal (orange) line before
+1980. The CPI itself rose \textbf{35-fold} from 1900 (index 2.8, base
+2022 = 100) to 2022 (index 100), so a disaster reported as causing \$1
+billion of damage in 1900 represents roughly \$35 billion of real 2022
+purchasing power --- the gap between the two lines in the right panel at any
+given year is exactly that year's CPI ratio to 2022, no more and no less.
+This is the reason every damage-based claim elsewhere in this report (Task
+Set C, Figures~\ref{fig:damage} and \ref{fig:decoupling}, and the
+Task Set B leaderboards) is stated in real terms: a raw, unadjusted
+comparison across a 123-year window would silently understate every disaster
+before roughly 1980 relative to one after it.
+
+%=======================================================================
 \section{The Data Story}
 \label{sec:story}
 %=======================================================================
@@ -1105,17 +1202,19 @@ Tableau-ready extract and the pipeline diagram (Figure~\ref{fig:pipeline});
 designed and implemented Task Set A (Figures~\ref{fig:types}--\ref{fig:trimmed}),
 including the reporting-bias diagnostic (Figure~\ref{fig:reporting}) and the
 trimmed-deaths robustness test (Figure~\ref{fig:trimmed}) that qualified the
-team's headline finding; wrote Sections 2, 3 and 4; presents the preprocessing
-minute and Task Set A in the video.
+team's headline finding, and the flood-subtype drill-down
+(Figure~\ref{fig:floodsubtype}); wrote Sections 2, 3 and 4; presents the
+preprocessing minute and Task Set A in the video.
 
 \subsection*{\memberB~(\rollB) --- Task Set B (\emph{Where?})}
 Designed and implemented Task Set B
 (Figures~\ref{fig:mapevents}--\ref{fig:lethality}); built the Plotly choropleth
 pipeline including the logarithmic colour scale and ISO-3 joins; produced the
 four-panel country leaderboards, the concentration curves and the lethality
-ranking; identified the events/deaths/damage rank mismatch (United States 1st
-versus 23rd) that became a central thread of the data story; wrote Sections 5 and
-9; presents Task Set B in the video.
+ranking and the volume-versus-diversity scatter (Figure~\ref{fig:diversity});
+identified the events/deaths/damage rank mismatch (United States 1st versus
+23rd) that became a central thread of the data story; wrote Sections 5 and 9;
+presents Task Set B in the video.
 
 \subsection*{\memberC~(\rollC) --- Task Set C (\emph{What?})}
 Designed and implemented Task Set C
@@ -1124,7 +1223,8 @@ impact-signature chart, the deadliness--cost plane, the real-damage time series,
 the lethality heatmap and the indexed decoupling chart; ran the log-linear trend
 fits and the Spearman decoupling test, and established that annual deaths carry
 no significant post-1970 trend; found the rising extreme-temperature lethality;
-wrote Sections 6 and 8; presents Task Set C in the video.
+produced the CPI-adjustment explainer (Figure~\ref{fig:cpi}); wrote Sections 6
+and 8; presents Task Set C in the video.
 
 \subsection*{Jointly}
 The guiding question and the three-way task decomposition

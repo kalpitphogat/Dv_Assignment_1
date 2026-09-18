@@ -4,7 +4,7 @@ DAS732 A1 - TASK SET B: "WHERE?"  The geography of exposure, 1900-2022.
 Guiding sub-question: Where does the disaster burden fall, and does the place
 that records the most disasters also suffer the most harm?
 
-Produces Fig8 - Fig12.  Fig8/Fig9 are Plotly choropleths exported through
+Produces Fig8 - Fig12 and Fig19.  Fig8/Fig9 are Plotly choropleths exported through
 kaleido; the rest are matplotlib.
 """
 import numpy as np
@@ -215,5 +215,38 @@ titleblock(fig, "Among equally disaster-prone countries, lethality differs by a 
 fig.subplots_adjust(top=0.80)
 footnote(fig, y=-0.02)
 save(fig, "Fig12.png", "lethality among the most-exposed countries")
+
+# ---------------------------------------------------------------- Fig 19 ----
+# B1.6 DERIVE: is exposure narrow (one hazard) or broad (many hazards)?
+diversity = df.groupby("country")["type"].nunique()
+c["diversity"] = c["country"].map(diversity)
+dom_type = (df.groupby(["country", "type"])["events"].sum()
+              .groupby(level=0).idxmax().apply(lambda t: t[1]))
+c["dominant"] = c["country"].map(dom_type)
+top20b = c.nlargest(20, "events").copy()
+
+TYPE_COLOR = {t: CAT[i % len(CAT)] for i, t in enumerate(sorted(c["dominant"].dropna().unique()))}
+fig, ax = plt.subplots(figsize=(9.6, 6.4))
+for t in top20b["dominant"].unique():
+    sub = top20b[top20b["dominant"] == t]
+    ax.scatter(sub["events"], sub["diversity"], s=180, color=TYPE_COLOR[t],
+               edgecolor=SURFACE, linewidth=1.2, label=t, zorder=3)
+for _, row in top20b.iterrows():
+    ax.annotate(row["label"], (row["events"], row["diversity"]),
+                xytext=(6, 4), textcoords="offset points", fontsize=8.5,
+                color=INK_SEC)
+ax.set_xscale("log")
+ax.set_xlabel("Total recorded events, 1900-2022 (log scale)")
+ax.set_ylabel("Number of distinct hazard types recorded")
+despine(ax)
+ax.legend(loc="lower right", fontsize=8, ncol=2)
+titleblock(fig, "High event volume and broad hazard diversity are different things",
+           "The 20 countries with the most recorded events: total events (log x-axis) "
+           "against how many distinct hazard types each has ever recorded. A scatter "
+           "plot is used because the question is the joint distribution of two "
+           "independent measures, not a ranking on either alone.")
+fig.subplots_adjust(top=0.82)
+footnote(fig, y=-0.02)
+save(fig, "Fig19.png", "event volume vs hazard diversity")
 
 print("Task B complete.")

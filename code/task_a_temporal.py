@@ -4,7 +4,7 @@ DAS732 A1 - TASK SET A: "WHEN?"  The temporal record, 1900-2022.
 Guiding sub-question: How has the recorded disaster burden changed over time,
 and how much of that change is real rather than an artefact of record-keeping?
 
-Produces Fig3 - Fig7.
+Produces Fig3 - Fig7 and Fig18.
 """
 import numpy as np
 import pandas as pd
@@ -217,5 +217,30 @@ titleblock(fig, "The fall in deaths is the disappearance of mega-catastrophes, n
 fig.subplots_adjust(top=0.80)
 footnote(fig, y=-0.02)
 save(fig, "Fig7.png", "trimmed-deaths robustness check")
+
+# ---------------------------------------------------------------- Fig 18 ----
+# A1.6 DRILL DOWN: floods drive the post-1970 rise (Fig4) - which floods?
+flood = df[df["type"] == "Flood"]
+SUBTYPE_ORDER = ["Riverine flood", "Flash flood", "Coastal flood", "Flood (unspecified)"]
+piv2 = (flood.pivot_table(index="year", columns="subtype", values="events",
+                          aggfunc="sum")
+             .reindex(columns=SUBTYPE_ORDER).fillna(0))
+piv2_s = piv2.rolling(5, min_periods=1, center=True).mean()
+
+fig, ax = plt.subplots(figsize=(9.6, 5.0))
+ax.stackplot(piv2_s.index, piv2_s.T.values, labels=piv2_s.columns,
+             colors=CAT[:4], alpha=0.92)
+ax.set_xlim(1900, 2022)
+ax.set_ylabel("Flood events per year (5-yr moving average)")
+ax.set_xlabel("Year")
+despine(ax)
+ax.legend(loc="upper left", ncol=2, fontsize=9)
+titleblock(fig, "Riverine flooding, not flash or coastal flooding, drives the flood trend",
+           "Flood events split by subtype. A stacked area chart is used because the "
+           "question is which subtype grows fastest inside an already-growing total, "
+           "not any single subtype's absolute level.")
+fig.subplots_adjust(top=0.84)
+footnote(fig, y=-0.02)
+save(fig, "Fig18.png", "flood events by subtype")
 
 print("Task A complete.")
